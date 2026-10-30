@@ -8,9 +8,15 @@ La topología y las distancias de referencia se apoyan en documentación de Adif
 
 ## Abrir el visor
 
-Descarga el repositorio y abre **[`results_network/visor.html`](results_network/visor.html)** en tu navegador. Es un archivo independiente, con los resultados incorporados; no necesita servidor ni conexión. En GitHub, descarga el archivo para ejecutarlo: la vista de código no reproduce HTML.
+**[Abrir Rail Lab en la web](https://alejandropedersen123-collab.github.io/rail-localization-matlab/)** — sin descarga ni instalación.
+
+Descarga el repositorio y abre **[`results_network/visor.html`](results_network/visor.html)** en tu navegador. Los resultados están incorporados y los controles funcionan sin servidor ni conexión. Las tipografías Genesis se cargan desde Fontshare y Google Fonts; sin conexión se usan fuentes locales. En GitHub, descarga el archivo para ejecutarlo: la vista de código no reproduce HTML.
 
 Puedes reproducir o desplazar el tiempo, seleccionar cualquiera de los ocho trenes y ver su velocidad, recorrido, autorización y hueco al tren precedente. Los escenarios son circulación nominal, interrupción de nuevas autorizaciones durante 10 minutos y una parada prolongada de 20 minutos.
+
+La interfaz sigue el diseño **Genesis**: General Sans, DM Sans y JetBrains Mono, superficies claras, controles índigo y temas claro/oscuro. En móvil, el mapa se desplaza horizontalmente para conservar etiquetas legibles. [Criterios de diseño](docs/VIEWER_DESIGN.md).
+
+La publicación usa GitHub Pages sobre la rama `main`, carpeta raíz, con `.nojekyll`. `index.html` abre el visor generado. Pages sirve el HTML y JavaScript; no ejecuta MATLAB en un servidor. Para publicar resultados nuevos, regenera el visor en MATLAB y sube los cambios a `main`.
 
 ## Ejecutar la red en MATLAB
 

@@ -30,4 +30,4 @@ El conjunto de pruebas verifica propiedades concretas del software y los casos e
 
 ## Artefactos revisados
 
-Las figuras se han renderizado y revisado visualmente. El visor HTML se ha probado en Chrome con los ocho servicios activos, cambio de escenario, selección de tren, desplazamiento temporal y reproducción. El HTML incluye los datos y no depende de librerías ni servidores externos. Para revisar los límites de los datos ferroviarios, consultar [REAL_DATA.md](REAL_DATA.md).
+Las figuras se han renderizado y revisado visualmente. El visor HTML se ha probado en Chrome con los ocho servicios activos, cambio de escenario, selección de tren, desplazamiento temporal y reproducción. El HTML incluye los datos y no depende de librerías externas de ejecución. La versión Genesis carga tipografías desde Fontshare y Google Fonts, con alternativas locales sin conexión. Para revisar los límites de los datos ferroviarios, consultar [REAL_DATA.md](REAL_DATA.md).
