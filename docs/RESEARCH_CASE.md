@@ -17,9 +17,9 @@ La posible aportación de este proyecto se deberá concretar y comparar: integra
 | Red de ocho trenes | Reservas exclusivas, liberación por cola, regulación de velocidad y paradas, tres escenarios | Posición y ocupación ideales; dinámica simplificada; sin sensores reales ni integración ATO/ATP |
 | Laboratorio de sensores | Cuatro arquitecturas, observaciones comunes en replay, controles de coherencia y frenado hipotético | Un tren, obstáculo fijo, tres semillas publicadas; no tasas de fiabilidad ni prueba de campo |
 | Sección de detección local | Balance de ejes, ocupación persistente, pérdida de enlace remoto, fallo local retenido | Modelo lógico unidireccional, sin hardware, desvíos, inversión, vehículos que entran por puntos no instrumentados ni garantía de detección de fallos |
-| Evaluación económica | Coste total y equilibrio a partir de entradas del usuario | Sin precios, presupuestos, mantenimiento observado ni ahorro validado |
+| Presupuestos de prototipo | Tres ejemplos preparados de material y trabajo, con referencias de componentes | Bandas propias, sin cotización de instalación ferroviaria ni ahorro validado |
 
-El estimador de sensores y el contador de ejes **no están conectados** a la regulación de los ocho trenes. La navegación común de la web no implica integración funcional. Las trayectorias se calculan en MATLAB y se reproducen en el navegador; el ensayo lógico de detección y la aritmética de costes se ejecutan al interactuar.
+El estimador de sensores y el contador de ejes **no están conectados** a la regulación de los ocho trenes. La navegación común de la web no implica integración funcional. Madrid–Andalucía reproduce trayectorias de MATLAB; los otros mapas preparados y los JSON importados se calculan en el navegador. La detección lógica y los presupuestos también se ejecutan localmente. Los fallos GPS del mapa son etiquetas de ensayo y no alimentan al regulador ideal.
 
 ## Evidencias favorables y casos pendientes
 
@@ -46,21 +46,11 @@ Se separan dos degradaciones:
 
 Funcionar sin internet exige conservar alimentación y la comunicación local entre detectores, procesador y funciones pertinentes. La autonomía no equivale a circular indefinidamente sin conocer el estado de la infraestructura.
 
-## Economía: una hipótesis que pueda salir negativa
+## Economía: ejemplos preparados y alcance explícito
 
-La calculadora no precarga precios. Para `N` trenes y `H` años:
+La web ofrece tres presupuestos de laboratorio para uno, tres u ocho vehículos de pruebas. No pide precios al visitante. Se separan material, horas hipotéticas de desarrollo y total; el desglose se puede descargar en CSV. [Bandas, referencias y exclusiones](COST_EXAMPLES.md).
 
-```
-I = N × coste_por_tren + infraestructura + integración + validación
-Coste total = I + H × operación_anual
-Balance = H × coste_anual_evitable − coste_total
-Coste anual evitable de equilibrio = coste_total / H
-Recuperación simple = I / (coste_anual_evitable − operación_anual)
-```
-
-Si el margen anual es nulo o negativo, una inversión positiva no se recupera. La web informa de sobrecoste si el balance es negativo. La comparación exige alternativa, servicio y horizonte equivalentes; no se suman ahorros duplicados. Los valores son constantes, sin descuento, inflación, valor residual ni valoración económica de accidentes. Dejar vacío significa desconocido; introducir cero supone coste nulo.
-
-Las partidas deben cubrir hardware embarcado, infraestructura, comunicaciones, energía, centro de control, integración, validación, ciberseguridad, soporte, reposiciones y mantenimiento. Medir el coste completo es necesario antes de afirmar que la propuesta es más barata.
+Los costes completos de una implantación requerirían equipos adecuados, infraestructura, comunicaciones, energía, centro de control, integración, validación, ciberseguridad, soporte, reposiciones y mantenimiento. Sin esas partidas y una alternativa equivalente no puede afirmarse que la propuesta sea más barata. La función de coste de ciclo de vida se conserva en el código como utilidad, pero ya no es el flujo público de la web.
 
 ## Próximos hitos y criterios medibles
 
@@ -76,7 +66,7 @@ La fiabilidad necesita una definición operacional, exposición suficiente, cond
 
 ## Reproducibilidad y comprobaciones
 
-- `network.export_viewer` incorpora los CSV de sensores y los resultados guardados de la red en un HTML independiente. No modifica la física.
+- `network.export_viewer` incorpora los CSV de sensores y los resultados guardados de la red en un HTML independiente. El motor configurable del navegador se contrasta con referencias de MATLAB.
 - `viewer/analytics.js` contiene las funciones puras de comparación, coste y detección. `viewer/app.js` conecta los controles y las vistas.
-- `node --test tests/viewer.test.cjs` comprueba ocupación, fallos retenidos, pérdidas de enlace, entradas inválidas, resultados económicos positivos y negativos, ámbito del diagrama y correspondencia con las 68 filas de sensores.
+- `node --test tests/*.test.cjs` comprueba ocupación, fallos retenidos, pérdidas de enlace, entradas inválidas, resultados económicos positivos y negativos, ámbito del diagrama y correspondencia con las 68 filas de sensores.
 - `network.selftest(results)` y `rail.selftest(rail.default_config())` comprueban el motor y el laboratorio original. El alcance completo de validación está en [NETWORK_VALIDATION.md](NETWORK_VALIDATION.md) y [VALIDATION.md](VALIDATION.md).

@@ -1,15 +1,15 @@
 ID,Name,X,Y
-1,Madrid Atocha,480,45
-2,Ciudad Real,480,135
-3,Puertollano,480,205
-4,Villanueva de Cordoba,480,275
-5,Cordoba,480,345
-6,Bif. Malaga AV,480,410
-7,Sevilla Santa Justa,180,610
-8,Puente Genil-Herrera,660,470
-9,Antequera Santa Ana,660,550
-10,Malaga Maria Zambrano,660,710
-11,Antequera AV,810,550
-12,Bif. Archidona,920,550
-13,Loja,1030,610
-14,Granada,1140,710
+1,Madrid Atocha,340,68
+2,Ciudad Real,340,172
+3,Puertollano,340,252
+4,Villanueva de Cordoba,340,332
+5,Cordoba,340,412
+6,Bif. Malaga AV,340,480
+7,Sevilla Santa Justa,140,756
+8,Puente Genil-Herrera,510,548
+9,Antequera Santa Ana,510,628
+10,Malaga Maria Zambrano,510,792
+11,Antequera AV,674,628
+12,Bif. Archidona,826,628
+13,Loja,864,712
+14,Granada,936,808

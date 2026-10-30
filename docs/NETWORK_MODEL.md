@@ -54,3 +54,9 @@ r = rail_network_demo(fullfile(pwd,'results_smoke'), ...
 `validate_network` ejecuta los tres escenarios, comprueba distancia analítica de frenado, exclusión de recursos y liberación por la cola, interrupción de autorizaciones, protección de vía única y anticipación de reducción de velocidad. Añade un encuentro de dos trenes de Granada, una ejecución nominal a 0,5 s y las pruebas del laboratorio original. El criterio de convergencia exige una diferencia máxima de llegada inferior a 90 s; no una igualdad exacta, porque reservas y paradas se deciden en instantes discretos.
 
 La auditoría reconstruye la ocupación a partir de la cabeza y la cola. Comprueba que ningún recurso físico lo ocupen dos trenes y que exista reserva para cada ocupación. También cuenta los rebases de autorización y los excesos de límite. Superar estas pruebas valida los casos ejecutados bajo sus supuestos, no la seguridad de una implementación ferroviaria real.
+
+## Configuración portable y ejemplos web
+
+El flujo principal carga `networks/madrid-andalucia.json` y compila el grafo con `network.compile_project`. `options.project` permite sustituir infraestructura, vehículos y horarios. Los antiguos ayudantes de infraestructura/horarios se conservan para pruebas de regresión. El sentido se define por tramo, no por una orientación Madrid–Andalucía global. El diagrama toma una ruta de referencia del proyecto. Véase [formato y alcance](CONFIGURATION.md).
+
+El motor JavaScript contrasta sus estados físicos muestreados con referencias MATLAB para una red ibérica de doble vía, una métrica de vía única y un metro en anillo. La capa GPS es una condición hipotética mostrada sobre el mapa: no sustituye la posición ideal del controlador.

@@ -9,10 +9,24 @@
       return {train: row.Train, arrival: row.Arrival_s, baseline: ref?.Arrival_s ?? null, delta};
     });
   }
-  function commonTrunkKm(row, edges) {
+  function commonTrunkKm(row, edges, route = [1,2,3,4,5]) {
     const edge = edges[row[6] - 1];
-    if (!edge || edge.ID > 5 || row[2] === 0 || row[2] === 3) return null;
-    return edges.filter(e => e.ID < edge.ID).reduce((sum, e) => sum + e.Length_km, 0) + row[7] / 1000;
+    const j = route.findIndex(e => Math.abs(e) === edge?.ID);
+    if (!edge || j < 0 || row[2] === 0 || row[2] === 3) return null;
+    return route.slice(0,j).reduce((sum,e) => sum + edges[Math.abs(e)-1].Length_km,0)
+      + (route[j] > 0 ? row[7]/1000 : edge.Length_km-row[7]/1000);
+  }
+  function prototypeBudget(index) {
+    const cases=[{name:'Un vehículo de pruebas',vehicles:1,points:2,hours:[160,320]},
+      {name:'Tres vehículos de pruebas',vehicles:3,points:4,hours:[240,480]},
+      {name:'Ocho vehículos de pruebas',vehicles:8,points:6,hours:[400,800]}];
+    const c=cases[index]; if(!c)return null;
+    // Scenario bands in EUR, not supplier quotations or railway installation costs.
+    const rows=[['GNSS y antena',c.vehicles,220,350],['IMU y odometría de laboratorio',c.vehicles,60,150],
+      ['Ordenador, alimentación y caja',c.vehicles,160,260],['Detector local de maqueta',c.points,40,100],['Material común de banco',1,150,350]];
+    const material=[0,1].map(k=>rows.reduce((sum,r)=>sum+r[1]*r[k+2],0));
+    const engineering=[c.hours[0]*45,c.hours[1]*70];
+    return {...c,rows,material,engineering,total:material.map((v,i)=>v+engineering[i])};
   }
   function lifecycleCost(p) {
     const keys = ['trains','years','onboard','integration','validation','trackside','annual','avoided'];
@@ -55,7 +69,7 @@
     // No automatic clear after a detector fault, even if the balance returns to zero.
     return s;
   }
-  const api = {compareArrivals, commonTrunkKm, lifecycleCost, newSection, sectionStep, sectionStatus};
+  const api = {compareArrivals, commonTrunkKm, prototypeBudget, lifecycleCost, newSection, sectionStep, sectionStatus};
   if (typeof module !== 'undefined' && module.exports) module.exports = api;
   else root.RailMetrics = api;
 })(typeof globalThis !== 'undefined' ? globalThis : this);

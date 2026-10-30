@@ -1,0 +1,283 @@
+{
+  "version": 1,
+  "id": "metro-anillo",
+  "name": "Metro en anillo · plantilla",
+  "description": "Plantilla ficticia para configurar. Distancias, límites y horarios sintéticos; no representa una línea real.",
+  "parameters": {
+    "step_s": 1,
+    "sample_s": 10,
+    "duration_s": 3600,
+    "block_m": 250,
+    "loop_m": 250,
+    "lookahead_m": 2000,
+    "response_s": 1,
+    "reserve_m": 30,
+    "release_m": 10,
+    "terminal_m": 0,
+    "terminal_kmh": 80
+  },
+  "nodes": [
+    {
+      "id": 1,
+      "name": "Estación 1",
+      "x": 200,
+      "y": 180,
+      "passingLoop": true,
+      "junction": "none",
+      "labelSide": "bottom"
+    },
+    {
+      "id": 2,
+      "name": "Estación 2",
+      "x": 700,
+      "y": 180,
+      "passingLoop": true,
+      "junction": "none",
+      "labelSide": "bottom"
+    },
+    {
+      "id": 3,
+      "name": "Estación 3",
+      "x": 850,
+      "y": 500,
+      "passingLoop": true,
+      "junction": "none",
+      "labelSide": "bottom"
+    },
+    {
+      "id": 4,
+      "name": "Estación 4",
+      "x": 450,
+      "y": 750,
+      "passingLoop": true,
+      "junction": "none",
+      "labelSide": "bottom"
+    },
+    {
+      "id": 5,
+      "name": "Estación 5",
+      "x": 100,
+      "y": 500,
+      "passingLoop": true,
+      "junction": "none",
+      "labelSide": "bottom"
+    }
+  ],
+  "edges": [
+    {
+      "id": 1,
+      "fromNode": 1,
+      "toNode": 2,
+      "length_m": 1700,
+      "tracks": 2,
+      "gauges_mm": [
+        1435
+      ],
+      "maxSpeed_kmh": 70,
+      "line": "DEMO",
+      "source": "synthetic",
+      "quality": "synthetic",
+      "gps": "available"
+    },
+    {
+      "id": 2,
+      "fromNode": 2,
+      "toNode": 3,
+      "length_m": 1900,
+      "tracks": 2,
+      "gauges_mm": [
+        1435
+      ],
+      "maxSpeed_kmh": 70,
+      "line": "DEMO",
+      "source": "synthetic",
+      "quality": "synthetic",
+      "gps": "available"
+    },
+    {
+      "id": 3,
+      "fromNode": 3,
+      "toNode": 4,
+      "length_m": 2100,
+      "tracks": 2,
+      "gauges_mm": [
+        1435
+      ],
+      "maxSpeed_kmh": 70,
+      "line": "DEMO",
+      "source": "synthetic",
+      "quality": "synthetic",
+      "gps": "available"
+    },
+    {
+      "id": 4,
+      "fromNode": 4,
+      "toNode": 5,
+      "length_m": 2300,
+      "tracks": 2,
+      "gauges_mm": [
+        1435
+      ],
+      "maxSpeed_kmh": 70,
+      "line": "DEMO",
+      "source": "synthetic",
+      "quality": "synthetic",
+      "gps": "available"
+    },
+    {
+      "id": 5,
+      "fromNode": 5,
+      "toNode": 1,
+      "length_m": 2500,
+      "tracks": 2,
+      "gauges_mm": [
+        1435
+      ],
+      "maxSpeed_kmh": 70,
+      "line": "DEMO",
+      "source": "synthetic",
+      "quality": "synthetic",
+      "gps": "available"
+    }
+  ],
+  "trains": [
+    {
+      "id": "MET1",
+      "label": "Vuelta 1",
+      "route": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "departure_s": 0,
+      "length_m": 60,
+      "gauge_mm": 1435,
+      "maxSpeed_kmh": 70,
+      "acceleration_mps2": 1,
+      "brake_mps2": 1,
+      "stops": [
+        {
+          "node": 2,
+          "dwell_s": 30
+        },
+        {
+          "node": 3,
+          "dwell_s": 30
+        },
+        {
+          "node": 4,
+          "dwell_s": 30
+        },
+        {
+          "node": 5,
+          "dwell_s": 30
+        },
+        {
+          "node": 1,
+          "dwell_s": 30
+        }
+      ]
+    },
+    {
+      "id": "MET2",
+      "label": "Vuelta 2",
+      "route": [
+        -5,
+        -4,
+        -3,
+        -2,
+        -1
+      ],
+      "departure_s": 0,
+      "length_m": 60,
+      "gauge_mm": 1435,
+      "maxSpeed_kmh": 70,
+      "acceleration_mps2": 1,
+      "brake_mps2": 1,
+      "stops": [
+        {
+          "node": 5,
+          "dwell_s": 30
+        },
+        {
+          "node": 4,
+          "dwell_s": 30
+        },
+        {
+          "node": 3,
+          "dwell_s": 30
+        },
+        {
+          "node": 2,
+          "dwell_s": 30
+        },
+        {
+          "node": 1,
+          "dwell_s": 30
+        }
+      ]
+    },
+    {
+      "id": "MET3",
+      "label": "Vuelta 3",
+      "route": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "departure_s": 180,
+      "length_m": 60,
+      "gauge_mm": 1435,
+      "maxSpeed_kmh": 70,
+      "acceleration_mps2": 1,
+      "brake_mps2": 1,
+      "stops": [
+        {
+          "node": 2,
+          "dwell_s": 30
+        },
+        {
+          "node": 3,
+          "dwell_s": 30
+        },
+        {
+          "node": 4,
+          "dwell_s": 30
+        },
+        {
+          "node": 5,
+          "dwell_s": 30
+        },
+        {
+          "node": 1,
+          "dwell_s": 30
+        }
+      ]
+    }
+  ],
+  "analysisRoute": [
+    1,
+    2,
+    3,
+    4,
+    5
+  ],
+  "gpsFaults": [
+    {
+      "edge": 2,
+      "start_s": 100,
+      "end_s": 500,
+      "status": "unavailable"
+    },
+    {
+      "edge": 3,
+      "start_s": 300,
+      "end_s": 700,
+      "status": "unknown"
+    }
+  ]
+}

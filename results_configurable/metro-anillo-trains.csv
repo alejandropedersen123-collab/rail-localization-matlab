@@ -1,0 +1,4 @@
+Train,Route,PlannedDeparture_s,Departure_s,Arrival_s,Travel_min,MaxSpeed_kmh,MinimumLeaderGap_m,Restricted_s
+MET1,Vuelta 1,0,0,765,12.75,70,NaN,21
+MET2,Vuelta 2,0,0,765,12.75,70,NaN,21
+MET3,Vuelta 3,180,180,945,12.75,70,1840.23055479159,21

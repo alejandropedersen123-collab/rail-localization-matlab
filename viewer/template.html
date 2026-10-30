@@ -249,6 +249,15 @@ button:disabled { opacity: .5; cursor: not-allowed; transform: none; }
   .chart-wrap { overflow-x: auto; } #diagram { width: 680px; min-width: 680px; }
   .section-title { flex-wrap: wrap; } .section-title .chip { white-space: normal; }
 }
+.example-controls { display: grid; grid-template-columns: 1fr 1fr auto; gap: 20px; padding: 24px; margin-bottom: 20px; align-items: end; }
+.example-controls p { grid-column: 1/-1; margin: 0; font-size: 13px; color: var(--secondary); }
+.gps-guide { border-left: 2px solid var(--border); padding: 8px 20px; margin: 20px 0; }
+.gps-guide strong { font-size: 13px; } .gps-guide .actions { margin-top: 12px; }
+.gps-guide p { color: var(--secondary); font-size: 12px; line-height: 1.6; }
+.gps-guide button { text-align: left; font-weight: 400; }
+.budget-table { min-width: 640px; } .file-label { font-size: 12px; line-height: 2; }
+.file-label input { max-width: 100%; }
+@media (max-width:860px) { .example-controls { grid-template-columns: 1fr; } }
 </style>
 </head>
 <body>
@@ -271,9 +280,9 @@ button:disabled { opacity: .5; cursor: not-allowed; transform: none; }
     <div>
       <div class="overline">Rail Lab · Investigación en operación automática</div>
       <h1>Hacia un ferrocarril<br>más autónomo.</h1>
-      <p class="intro">Una arquitectura para explorar conducción automática, detección local y fusión de sensores. El objetivo: reducir el coste de operación y mejorar la fiabilidad. Aquí puedes examinar las pruebas y poner a prueba las hipótesis.</p>
+      <p class="intro">Elige una red, observa sus trenes y descubre qué ocurre cuando falta el GPS. Ejemplos preparados para explorar una operación más autónoma, sus limitaciones y cuánto costaría construir un prototipo.</p><div class="actions" style="margin-top:20px"><button id="startDemo" class="primary">Ver los trenes en marcha →</button><button id="seeBudget">Ver ejemplos de coste</button></div>
     </div>
-    <aside class="hero-stats"><div class="overline">Estado del proyecto</div><p><strong>Prototipo de simulación</strong></p><p>8 trenes · 3 ramales<br>17 escenarios de sensores<br>Código y resultados revisables</p></aside>
+    <aside class="hero-stats"><div class="overline">Estado del proyecto</div><p><strong>Prototipo de simulación</strong></p><p>4 redes de ejemplo<br>17 escenarios de sensores<br>Sin instalar ni programar</p></aside>
   </header>
   <div class="workspace-nav" role="tablist" aria-label="Áreas del laboratorio" id="workspace">
     <button id="tab-proposal" role="tab" aria-selected="true" aria-controls="proposal" data-panel="proposal">01 · Visión y evidencias</button>
@@ -306,11 +315,18 @@ button:disabled { opacity: .5; cursor: not-allowed; transform: none; }
       <div class="note">RMSE = error cuadrático medio de posición. La cobertura indica la fracción de muestras cuyo error cae dentro de ±3σ del filtro; no es una probabilidad de seguridad. Se muestran todos los casos, incluidos los fallos que siguen sin resolverse.</div>
       <div class="padded actions"><button id="exportEvidence">Descargar resultados CSV ↓</button><a class="inline-link" href="https://github.com/alejandropedersen123-collab/rail-localization-matlab/blob/main/docs/RESEARCH_CASE.md" target="_blank" rel="noopener">Propuesta, evidencias y plan de validación ↗</a></div>
     </article>
-    <p class="body-copy section-block">Alcance: el ensayo de sensores, la red de ocho trenes y el demostrador de detección local son experimentos separados. La fusión todavía no alimenta al regulador de la red, que utiliza posición y ocupación ideales. La web reproduce resultados de MATLAB; el ensayo de ocupación y el cálculo de costes sí se ejecutan en el navegador.</p>
+    <p class="body-copy section-block">Alcance: el ensayo de sensores, la red de ocho trenes y el demostrador de detección local son experimentos separados. La fusión todavía no alimenta al regulador de la red, que utiliza posición y ocupación ideales. Madrid–Andalucía reproduce resultados de MATLAB; las otras redes se calculan en el navegador. El ensayo de ocupación y los presupuestos son demostradores separados.</p>
   </section>
   <section id="simulation" role="tabpanel" aria-labelledby="tab-simulation" hidden>
-    <div class="section-title"><h2 id="simulation-title">Ocho trenes. Regulación automática.</h2><span class="chip">Modelo microscópico · 3 escenarios</span></div>
-    <p class="section-copy">Las reservas, la aceleración, el frenado y las paradas se calculan automáticamente. Explora cómo se propaga una incidencia sobre el tronco Madrid–Andalucía.</p>
+    <div class="section-title"><h2 id="simulation-title">Ocho trenes. Regulación automática.</h2><span class="chip">Modelos de tráfico preparados</span></div>
+    <p class="section-copy" id="networkDescription"></p>
+    <div class="card example-controls">
+      <div class="field"><label for="networkExample">1 · Elige un mapa preparado</label><select id="networkExample"></select></div>
+      <div class="field"><label for="gpsExample">2 · Qué pasa con el GPS (supuesto)</label><select id="gpsExample"><option value="outage">Pérdida de GPS y cobertura desconocida</option><option value="normal">GPS disponible durante todo el ensayo</option><option value="unknown">No conocemos la cobertura</option></select></div>
+      <button id="loadExample">Cargar este ejemplo</button><button id="cancelExample" hidden>Cancelar cálculo</button>
+      <p id="exampleStatus" role="status">Madrid–Andalucía está listo. Pulsa Reproducir para empezar.</p>
+    </div>
+    <div class="gps-guide"><strong>Momentos preparados para explorar</strong><div id="gpsSchedule" class="actions"></div><p>Ámbar: sin GPS · Trazo de puntos: cobertura desconocida. Son fallos ficticios; no un estudio de cobertura real. El regulador sigue usando posición ideal para estudiar el tráfico.</p></div>
     <div class="controls">
       <button id="play" class="primary" aria-label="Reproducir simulación"><span id="playIcon" aria-hidden="true">▶</span><span id="playText">Reproducir</span></button>
       <div class="field scenario-field"><label for="scenario">Escenario</label><select id="scenario"></select></div>
@@ -318,15 +334,15 @@ button:disabled { opacity: .5; cursor: not-allowed; transform: none; }
       <div class="clock"><span class="clock-label">Tiempo del modelo</span><output id="time">00:00:00</output></div>
       <div class="timeline"><span>00:00</span><input id="slider" type="range" min="0" value="0" aria-label="Tiempo transcurrido de simulación"><span id="duration">--:--</span></div>
     </div>
-    <div class="context"><span class="chip" id="fault" role="status"></span><p>Red real simplificada. Horarios, posiciones, velocidades y separaciones simulados.</p></div>
+    <div class="context"><span class="chip" id="fault" role="status"></span><p>Horarios, posiciones, velocidades y separaciones simulados. Los ejemplos regionales y de metro son mapas ficticios.</p></div>
     <div class="grid">
       <section class="card" aria-labelledby="map-title">
         <div class="cardhead"><h2 id="map-title">Esquema de la red</h2><span class="chip" id="active"></span></div>
         <p class="map-swipe">↔ Desliza el esquema para recorrer todos los ramales.</p>
-        <div class="map-frame" tabindex="0" role="region" aria-label="Esquema desplazable de la red"><canvas id="map" width="1000" height="880" role="img" aria-label="Esquema de los ramales y posición de los ocho trenes; datos equivalentes en la tabla de trenes"></canvas></div>
-        <p class="map-caption">Madrid · Sevilla · Málaga · Granada / Esquema sin escala geográfica</p>
+        <div class="map-frame" tabindex="0" role="region" aria-label="Esquema desplazable de la red"><canvas id="map" width="1000" height="880" role="img" aria-label="Esquema de los ramales y posición de los trenes; datos equivalentes en la tabla de trenes"></canvas></div>
+        <p class="map-caption" id="mapCaption"></p>
         <div class="legend"><span><i class="rail-line" aria-hidden="true"></i>Vía doble</span><span><i class="rail-line single" aria-hidden="true"></i>Vía única</span><span>Flecha = sentido de marcha</span></div>
-        <div class="note">Distancias de referencia documentadas. Cantones de 2 km, apartaderos y límites locales asumidos. Las reservas se liberan al pasar la cola del tren.</div>
+        <div class="note">Cada proyecto define distancias, cantones, apartaderos, anchos y límites. Las reservas se liberan al pasar la cola. Los trazos de puntos indican cobertura GPS desconocida en el ensayo.</div>
       </section>
       <section class="card" aria-labelledby="trains-title">
         <div class="cardhead"><h2 id="trains-title">Los ocho trenes</h2><small>Selecciona uno</small></div>
@@ -335,15 +351,16 @@ button:disabled { opacity: .5; cursor: not-allowed; transform: none; }
           <div class="selection-head"><h3 id="detailTitle">SIM01</h3><span class="chip" id="state"></span></div>
           <div id="selectedRoute"></div>
           <div class="stats"><div><small>Recorrido desde origen</small><strong id="distance"></strong></div><div><small>Hasta fin de autorización</small><strong id="authority"></strong></div></div>
-          <p class="status" id="detail"></p>
+          <p class="status" id="detail"></p><p class="note" id="gpsDetail" style="margin:16px 0 0"></p>
         </div>
       </section>
     </div>
     <div class="metric-strip"><div><small>Finalizaciones del caso completo</small><strong id="auditComplete"></strong><small>Resultado del motor; no estado del cursor</small></div><div><small>Conflictos de ocupación auditados</small><strong id="auditConflicts"></strong><small>Comprobados en cada paso de integración</small></div><div><small>Mayor cambio de llegada frente al nominal</small><strong id="arrivalDelta"></strong><small>Comparación de simulaciones, no puntualidad real</small></div></div>
     <div class="two-col section-block">
-      <article class="card"><div class="cardhead"><h2>Diagrama espacio–tiempo</h2><small>Tronco compartido</small></div><div class="chart-wrap" tabindex="0" role="region" aria-label="Diagrama espacio–tiempo desplazable"><canvas id="diagram" width="1000" height="520" role="img" aria-label="Trayectorias de los ocho trenes entre Madrid y la bifurcación de Málaga; la tabla adjunta ofrece llegadas por tren"></canvas></div><div class="chart-key" id="chartKey"></div><div class="note">Eje vertical: distancia acumulada del modelo desde Madrid hasta Bif. Málaga AV. Solo se dibujan los cinco tramos comunes. Un cruce entre sentidos opuestos es normal en doble vía. Pulsa en el gráfico para mover el tiempo; el deslizador permite hacerlo con teclado.</div></article>
+      <article class="card"><div class="cardhead"><h2>Diagrama espacio–tiempo</h2><small>Ruta de referencia</small></div><div class="chart-wrap" tabindex="0" role="region" aria-label="Diagrama espacio–tiempo desplazable"><canvas id="diagram" width="1000" height="520" role="img" aria-label="Trayectorias sobre la ruta de referencia del ejemplo; la tabla adjunta ofrece llegadas por tren"></canvas></div><div class="chart-key" id="chartKey"></div><div class="note">Eje vertical: distancia acumulada sobre la ruta de referencia configurada. Los tramos fuera de esa ruta no se dibujan. Un cruce entre sentidos opuestos es normal en doble vía. Pulsa en el gráfico para mover el tiempo; el deslizador permite hacerlo con teclado.</div></article>
       <article class="card"><div class="cardhead"><h2>Impacto por tren</h2><small>Caso completo</small></div><div class="table-wrap"><table><thead><tr><th>Tren</th><th>Llegada T+</th><th>Δ vs. nominal</th></tr></thead><tbody id="arrivalRows"></tbody></table></div><div class="padded actions"><button id="exportComparison">Descargar comparación CSV ↓</button><button id="shareView">Copiar enlace a esta vista</button></div><p id="shareStatus" class="note" role="status">Selecciona un tren para destacarlo en el mapa y el diagrama.</p></article>
     </div>
+    <details class="card section-block"><summary><span>Para autores · Añadir otra red sin cambiar el motor</span><span>+</span></summary><div class="padded"><p class="body-copy">Las plantillas se guardan en JSON: nodos, tramos, anchos, rutas, paradas, vehículos y ventanas de GPS. Puedes importar una configuración preparada; no hace falta hacerlo para ver los ejemplos.</p><div class="actions" style="margin-top:16px"><label class="file-label">Cargar mapa JSON <input id="projectFile" type="file" accept=".json,application/json"></label><button id="exportProject">Descargar configuración del ejemplo</button></div></div></details>
   </section>
   <section id="detection" role="tabpanel" aria-labelledby="tab-detection" hidden>
     <div class="section-title"><h2>La ocupación se confirma localmente.</h2><span class="chip">Ensayo interactivo · Un tramo</span></div>
@@ -355,27 +372,18 @@ button:disabled { opacity: .5; cursor: not-allowed; transform: none; }
     <article class="card padded section-block"><h3>El principio ya existe en el ferrocarril.</h3><p class="body-copy">Los circuitos de vía y los contadores de ejes detectan ocupación en instalaciones actuales. La propuesta investiga cómo combinar detección local, estimación embarcada y operación automática con un coste total justificable. Necesita alimentación y enlaces locales supervisados; ausencia de internet no equivale a ausencia de toda comunicación. Un fallo conocido del detector deja el estado indeterminado, aunque el balance vuelva a cero. Un pulso perdido que no se detecte es una limitación de este modelo y exige diagnóstico y validación del sistema real.</p><div class="source-links" style="margin-top:16px"><a href="https://www.frauscher.com/en/products/axle-counters" target="_blank" rel="noopener">Contadores de ejes · Frauscher ↗</a><a href="https://www.adif.es/documents/20124/45207799/02.-%2BTechnical%2BDocumentation%2BITE%2Bcompliant%2Btrain%2Bdetection_ADIF.SPAIN%2Bes.pdf/51e8d77c-da3f-c859-60c6-09c385b3a1b2?t=1756892978735" target="_blank" rel="noopener">Sistemas de detección · Adif ↗</a></div></article>
   </section>
   <section id="economics" role="tabpanel" aria-labelledby="tab-economics" hidden>
-    <div class="section-title"><h2>¿Cuándo compensaría desplegarlo?</h2><span class="chip">Hipótesis editables · Sin precios precargados</span></div>
-    <p class="section-copy">Compara el coste añadido del proyecto con los costes que se podrían evitar frente a una alternativa definida. Introduce presupuestos y evidencia operativa: el simulador no aporta precios de mercado ni ahorros medidos.</p>
-    <div class="two-col">
-      <article class="card"><div class="cardhead"><h2>Supuestos del despliegue</h2><button id="resetCost">Vaciar costes</button></div><form id="costForm" class="cost-form" autocomplete="off">
-        <div class="field"><label for="costTrains">Trenes equipados</label><input id="costTrains" name="trains" type="number" min="1" max="10000" step="1" value="8" required></div>
-        <div class="field"><label for="costYears">Horizonte (años completos)</label><input id="costYears" name="years" type="number" min="1" max="50" step="1" value="5" required></div>
-        <div class="field"><label for="costOnboard">Equipamiento e instalación por tren (€)</label><input id="costOnboard" name="onboard" type="number" min="0" step="any" placeholder="Sin presupuesto" required></div>
-        <div class="field"><label for="costTrackside">Equipamiento e instalación en vía (€)</label><input id="costTrackside" name="trackside" type="number" min="0" step="any" placeholder="Sin presupuesto" required></div>
-        <div class="field"><label for="costIntegration">Ingeniería e integración total (€)</label><input id="costIntegration" name="integration" type="number" min="0" step="any" placeholder="Sin presupuesto" required></div>
-        <div class="field"><label for="costValidation">Ensayos, validación y puesta en servicio (€)</label><input id="costValidation" name="validation" type="number" min="0" step="any" placeholder="Sin presupuesto" required></div>
-        <div class="field"><label for="costAnnual">Operación, soporte y mantenimiento (€/año)</label><input id="costAnnual" name="annual" type="number" min="0" step="any" placeholder="Sin estimación" required></div>
-        <div class="field"><label for="costAvoided">Costes evitables frente a alternativa (€/año)</label><input id="costAvoided" name="avoided" type="number" min="0" step="any" placeholder="Necesita evidencia" required></div>
-      </form><div class="note">Incluye sensores, cómputo, comunicaciones, centro de control, energía, ciberseguridad, reposiciones y mantenimiento en las partidas correspondientes. Cero significa que has supuesto coste nulo; dejar vacío significa que falta información.</div></article>
-      <article class="card"><div class="cardhead"><h2>Balance del caso introducido</h2><span class="chip">Sin descuento financiero</span></div><div class="cost-result" aria-live="polite"><span class="overline" id="netLabel">Resultado pendiente</span><strong id="netCost">—</strong><p class="body-copy" id="costConclusion">Completa las hipótesis para calcular el balance. No se presupone que el proyecto ahorre dinero.</p><dl><div><dt>Inversión inicial</dt><dd id="investment">—</dd></div><div><dt>Coste total en el horizonte</dt><dd id="totalCost">—</dd></div><div><dt>Coste anual evitable necesario para equilibrar</dt><dd id="requiredBenefit">—</dd></div><div><dt>Recuperación simple de inversión</dt><dd id="payback">—</dd></div></dl></div><div class="padded actions"><button id="exportCost" disabled>Exportar hipótesis y resultado CSV ↓</button></div><div class="note">Balance = años × coste anual evitable − inversión inicial − años × operación anual. Mismo horizonte y alcance en ambas alternativas. Sin inflación, descuento, valor residual ni monetización de la seguridad; no es una oferta comercial.</div></article>
-    </div>
+    <div class="section-title"><h2>Cuánto costaría probar la idea.</h2><span class="chip">Ejemplos preparados · No tienes que introducir cifras</span></div>
+    <p class="section-copy">Estos importes orientan un prototipo de laboratorio con sensores y detección local. Elige su tamaño para ver material y trabajo por separado. Una instalación ferroviaria real requiere otro presupuesto.</p>
+    <div class="card padded"><div class="field"><label for="budgetExample">Tamaño del prototipo</label><select id="budgetExample"><option value="0">Pequeño · 1 vehículo y 2 detectores de maqueta</option><option value="1">Intermedio · 3 vehículos y 4 detectores</option><option value="2">Ampliado · 8 vehículos y 6 detectores</option></select></div><p class="body-copy" id="budgetScope" style="margin-top:16px"></p></div>
+    <div class="metric-strip"><div><small>Material, si lo montas tú</small><strong id="budgetMaterial"></strong><small>No cuenta el valor de tu tiempo</small></div><div><small>Desarrollo y pruebas por encargo</small><strong id="budgetWork"></strong><small>Horas y tarifa supuestas, no oferta profesional</small></div><div><small>Material + trabajo del ejemplo</small><strong id="budgetTotal"></strong><small>Presupuesto orientativo del prototipo</small></div></div>
+    <article class="card"><div class="cardhead"><h2>En qué se iría el material</h2><button id="exportBudget">Descargar ejemplo CSV ↓</button></div><div class="table-wrap"><table class="budget-table"><thead><tr><th>Partida</th><th>Unidades</th><th>Por unidad</th><th>Subtotal</th></tr></thead><tbody id="budgetRows"></tbody></table></div><div class="note">Bandas de ejemplo en euros, antes de IVA y envíos. Los detectores son de maqueta; estos precios no son los de contadores de ejes ferroviarios. Quedan fuera obra civil, homologación, acceso a vía, instalación en material rodante, comunicaciones de seguridad y mantenimiento de explotación.</div></article>
+    <div class="two-col section-block"><article class="card padded"><h3>De dónde salen las cifras</h3><p class="body-copy">Referencias consultadas el 30/10/2026: placa GNSS simpleRTK2B, 172 € de catálogo; Raspberry Pi 5 de 4 GB, 123,90 € con IVA alemán; IMU BNO085, 29,50 USD. Las bandas de la tabla son estimaciones propias para conjuntos completos, no conversiones ni cotizaciones de esos productos. Horas, tarifa y material de banco son supuestos del ejemplo.</p><div class="source-links" style="margin-top:16px"><a href="https://www.ardusimple.com/product/simplertk2b/" target="_blank" rel="noopener">GNSS · ArduSimple ↗</a><a href="https://www.berrybase.de/raspberry-pi-5-4gb-ram" target="_blank" rel="noopener">Ordenador · BerryBase ↗</a><a href="https://www.adafruit.com/product/4754" target="_blank" rel="noopener">IMU · Adafruit ↗</a></div></article><article class="card padded"><h3>¿Y ponerlo en una línea real?</h3><p class="body-copy">No sería comprar estas placas y colocarlas en los trenes. Habría que definir el ámbito de operación, integrar equipos adecuados, ensayar, validar e instalar con el operador. El proyecto aún no tiene presupuestos para esas partidas. Por eso esta vista da ejemplos de prototipo y no presenta un precio de despliegue ni un ahorro demostrado.</p></article></div>
     <article class="card padded section-block"><span class="overline">Camino hacia la operación autónoma</span><h2>Qué falta para convertir la idea en un sistema.</h2><div class="roadmap"><div><span class="chip">Actual · Simulación</span><h3>1. Comparar hipótesis</h3><p class="body-copy">Revisar fallos, reservas, costes e indicadores con resultados reproducibles.</p></div><div><span class="chip">Pendiente</span><h3>2. Integrar y ensayar</h3><p class="body-copy">Conectar estimación, detección y regulador; probar retardos, pérdidas, reinicios y fallos comunes con hardware.</p></div><div><span class="chip">Pendiente</span><h3>3. Piloto supervisado</h3><p class="body-copy">Registrar datos reales sin tomar el mando. Medir disponibilidad, falsos avisos, mantenimiento y costes.</p></div><div><span class="chip">Pendiente</span><h3>4. Validar la operación</h3><p class="body-copy">Evaluar protección, explotación degradada, accesos, puertas, evacuación y supervisión antes de plantear servicio sin conductor.</p></div></div></article>
   </section>
   <details class="card sources" id="sources">
     <summary><div><span class="overline">Entender el modelo</span><h2>Datos, fuentes y supuestos</h2></div><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></summary>
     <div class="sources-content">
-      <p>La red representa las conexiones Madrid–Sevilla (010), Bif. Málaga–Málaga (030) y Antequera–Granada (036). El tramo de Granada conserva vía única en la documentación contrastada. La variante de Loja proyectada no se considera en servicio.</p>
+      <p>El ejemplo Madrid–Andalucía representa las conexiones Madrid–Sevilla (010), Bif. Málaga–Málaga (030) y Antequera–Granada (036). El tramo de Granada conserva vía única en la documentación contrastada. La variante de Loja proyectada no se considera en servicio.</p>
       <p>Las distancias usan referencias de Adif de distintas fechas y puntos técnicos, con aproximaciones declaradas. Las velocidades máximas publicadas no equivalen al cuadro vigente de cada tramo. La longitud de 200 m y el máximo del vehículo de 330 km/h proceden de la ficha S-102/112; aquí la consigna está limitada a 300 km/h.</p>
       <p>SIM01–SIM08, sus salidas y sentidos pertenecen al experimento. No se han encontrado posiciones sincronizadas de los ocho trenes de la noticia. El hueco mostrado va desde la cabeza del seguidor hasta la cola del líder sobre la ruta compartida en el mismo sentido. «—» significa que no existe líder aplicable; no hay un mínimo reglamentario universal representado en esta vista.</p>
       <p>La interrupción de los minutos 60–70 impide ampliar autorizaciones y conserva las concedidas. La parada prolongada añade 20 minutos a la primera parada de SIM01. La detección de ocupación y la posición del regulador se idealizan. Estos casos no reconstruyen un accidente; los tiempos del modelo tampoco son horarios comerciales.</p>
@@ -386,6 +394,7 @@ button:disabled { opacity: .5; cursor: not-allowed; transform: none; }
 </main>
 <script id="data" type="application/json">__NETWORK_DATA__</script>
 <script>
+__ENGINE_JS__
 __ANALYTICS_JS__
 __APP_JS__
 </script>

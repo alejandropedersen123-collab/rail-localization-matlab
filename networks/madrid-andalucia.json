@@ -1,0 +1,652 @@
+{
+  "version": 1,
+  "id": "madrid-andalucia",
+  "name": "Madrid–Andalucía",
+  "description": "Red real simplificada; horarios y límites asumidos. Procedencia por tramo en docs/REAL_DATA.md.",
+  "parameters": {
+    "step_s": 1,
+    "sample_s": 10,
+    "duration_s": 21600,
+    "block_m": 2000,
+    "loop_m": 250,
+    "lookahead_m": 12000,
+    "response_s": 2,
+    "reserve_m": 100,
+    "release_m": 10,
+    "terminal_m": 3000,
+    "terminal_kmh": 80
+  },
+  "nodes": [
+    {
+      "id": 1,
+      "name": "Madrid Atocha",
+      "x": 340,
+      "y": 68,
+      "passingLoop": true,
+      "junction": "none",
+      "labelSide": "left"
+    },
+    {
+      "id": 2,
+      "name": "Ciudad Real",
+      "x": 340,
+      "y": 172,
+      "passingLoop": true,
+      "junction": "none",
+      "labelSide": "left"
+    },
+    {
+      "id": 3,
+      "name": "Puertollano",
+      "x": 340,
+      "y": 252,
+      "passingLoop": true,
+      "junction": "none",
+      "labelSide": "left"
+    },
+    {
+      "id": 4,
+      "name": "Villanueva de Cordoba",
+      "x": 340,
+      "y": 332,
+      "passingLoop": true,
+      "junction": "none",
+      "labelSide": "left"
+    },
+    {
+      "id": 5,
+      "name": "Cordoba",
+      "x": 340,
+      "y": 412,
+      "passingLoop": true,
+      "junction": "none",
+      "labelSide": "left"
+    },
+    {
+      "id": 6,
+      "name": "Bif. Malaga AV",
+      "x": 340,
+      "y": 480,
+      "passingLoop": true,
+      "junction": "directional",
+      "labelSide": "left"
+    },
+    {
+      "id": 7,
+      "name": "Sevilla Santa Justa",
+      "x": 140,
+      "y": 756,
+      "passingLoop": true,
+      "junction": "none",
+      "labelSide": "bottom"
+    },
+    {
+      "id": 8,
+      "name": "Puente Genil-Herrera",
+      "x": 510,
+      "y": 548,
+      "passingLoop": true,
+      "junction": "none",
+      "labelSide": "right"
+    },
+    {
+      "id": 9,
+      "name": "Antequera Santa Ana",
+      "x": 510,
+      "y": 628,
+      "passingLoop": true,
+      "junction": "directional",
+      "labelSide": "top"
+    },
+    {
+      "id": 10,
+      "name": "Malaga Maria Zambrano",
+      "x": 510,
+      "y": 792,
+      "passingLoop": true,
+      "junction": "none",
+      "labelSide": "bottom"
+    },
+    {
+      "id": 11,
+      "name": "Antequera AV",
+      "x": 674,
+      "y": 628,
+      "passingLoop": true,
+      "junction": "none",
+      "labelSide": "top"
+    },
+    {
+      "id": 12,
+      "name": "Bif. Archidona",
+      "x": 826,
+      "y": 628,
+      "passingLoop": true,
+      "junction": "none",
+      "labelSide": "top"
+    },
+    {
+      "id": 13,
+      "name": "Loja",
+      "x": 864,
+      "y": 712,
+      "passingLoop": true,
+      "junction": "none",
+      "labelSide": "bottom"
+    },
+    {
+      "id": 14,
+      "name": "Granada",
+      "x": 936,
+      "y": 808,
+      "passingLoop": true,
+      "junction": "none",
+      "labelSide": "bottom"
+    }
+  ],
+  "edges": [
+    {
+      "id": 1,
+      "fromNode": 1,
+      "toNode": 2,
+      "length_m": 170750.0,
+      "tracks": 2,
+      "gauges_mm": [
+        1435
+      ],
+      "maxSpeed_kmh": 300,
+      "line": "010",
+      "source": "S03",
+      "quality": "approx_reference",
+      "gps": "unknown"
+    },
+    {
+      "id": 2,
+      "fromNode": 2,
+      "toNode": 3,
+      "length_m": 38700.0,
+      "tracks": 2,
+      "gauges_mm": [
+        1435
+      ],
+      "maxSpeed_kmh": 300,
+      "line": "010",
+      "source": "S03/S04",
+      "quality": "approx_reference",
+      "gps": "unknown"
+    },
+    {
+      "id": 3,
+      "fromNode": 3,
+      "toNode": 4,
+      "length_m": 76250.0,
+      "tracks": 2,
+      "gauges_mm": [
+        1435
+      ],
+      "maxSpeed_kmh": 300,
+      "line": "010",
+      "source": "S03/S04a",
+      "quality": "approx_reference",
+      "gps": "unknown"
+    },
+    {
+      "id": 4,
+      "fromNode": 4,
+      "toNode": 5,
+      "length_m": 57970.0,
+      "tracks": 2,
+      "gauges_mm": [
+        1435
+      ],
+      "maxSpeed_kmh": 300,
+      "line": "010",
+      "source": "S04/S04a",
+      "quality": "approx_reference",
+      "gps": "unknown"
+    },
+    {
+      "id": 5,
+      "fromNode": 5,
+      "toNode": 6,
+      "length_m": 14330.0,
+      "tracks": 2,
+      "gauges_mm": [
+        1435
+      ],
+      "maxSpeed_kmh": 220,
+      "line": "010",
+      "source": "S04",
+      "quality": "documented_segment",
+      "gps": "unknown"
+    },
+    {
+      "id": 6,
+      "fromNode": 6,
+      "toNode": 7,
+      "length_m": 112500.0,
+      "tracks": 2,
+      "gauges_mm": [
+        1435
+      ],
+      "maxSpeed_kmh": 300,
+      "line": "010",
+      "source": "S01/S04",
+      "quality": "derived_approx",
+      "gps": "unknown"
+    },
+    {
+      "id": 7,
+      "fromNode": 6,
+      "toNode": 8,
+      "length_m": 61664.0,
+      "tracks": 2,
+      "gauges_mm": [
+        1435
+      ],
+      "maxSpeed_kmh": 300,
+      "line": "030",
+      "source": "S05",
+      "quality": "technical_reference_difference",
+      "gps": "unknown"
+    },
+    {
+      "id": 8,
+      "fromNode": 8,
+      "toNode": 9,
+      "length_m": 35526.0,
+      "tracks": 2,
+      "gauges_mm": [
+        1435
+      ],
+      "maxSpeed_kmh": 300,
+      "line": "030",
+      "source": "S05",
+      "quality": "technical_reference_difference",
+      "gps": "unknown"
+    },
+    {
+      "id": 9,
+      "fromNode": 9,
+      "toNode": 10,
+      "length_m": 56851.0,
+      "tracks": 2,
+      "gauges_mm": [
+        1435
+      ],
+      "maxSpeed_kmh": 300,
+      "line": "030",
+      "source": "S05",
+      "quality": "technical_reference_difference",
+      "gps": "unknown"
+    },
+    {
+      "id": 10,
+      "fromNode": 9,
+      "toNode": 11,
+      "length_m": 23320.0,
+      "tracks": 2,
+      "gauges_mm": [
+        1435
+      ],
+      "maxSpeed_kmh": 220,
+      "line": "036",
+      "source": "S05/S06/S10",
+      "quality": "approx_chainage_difference",
+      "gps": "unknown"
+    },
+    {
+      "id": 11,
+      "fromNode": 11,
+      "toNode": 12,
+      "length_m": 9500.0,
+      "tracks": 2,
+      "gauges_mm": [
+        1435
+      ],
+      "maxSpeed_kmh": 300,
+      "line": "036",
+      "source": "S10",
+      "quality": "approx_chainage_difference",
+      "gps": "unknown"
+    },
+    {
+      "id": 12,
+      "fromNode": 12,
+      "toNode": 13,
+      "length_m": 29390.0,
+      "tracks": 1,
+      "gauges_mm": [
+        1435
+      ],
+      "maxSpeed_kmh": 160,
+      "line": "036",
+      "source": "S06",
+      "quality": "approx_chainage_difference",
+      "gps": "unknown"
+    },
+    {
+      "id": 13,
+      "fromNode": 13,
+      "toNode": 14,
+      "length_m": 51990.0,
+      "tracks": 1,
+      "gauges_mm": [
+        1435
+      ],
+      "maxSpeed_kmh": 300,
+      "line": "036",
+      "source": "S06",
+      "quality": "residual_to_documented_total",
+      "gps": "unknown"
+    }
+  ],
+  "trains": [
+    {
+      "id": "SIM01",
+      "label": "Malaga > Madrid",
+      "route": [
+        -9,
+        -8,
+        -7,
+        -5,
+        -4,
+        -3,
+        -2,
+        -1
+      ],
+      "departure_s": 0,
+      "length_m": 200,
+      "gauge_mm": 1435,
+      "maxSpeed_kmh": 300,
+      "acceleration_mps2": 0.45,
+      "brake_mps2": 0.6,
+      "stops": [
+        {
+          "node": 9,
+          "dwell_s": 120.0
+        },
+        {
+          "node": 5,
+          "dwell_s": 120.0
+        },
+        {
+          "node": 1,
+          "dwell_s": 60.0
+        }
+      ]
+    },
+    {
+      "id": "SIM02",
+      "label": "Sevilla > Madrid",
+      "route": [
+        -6,
+        -5,
+        -4,
+        -3,
+        -2,
+        -1
+      ],
+      "departure_s": 600,
+      "length_m": 200,
+      "gauge_mm": 1435,
+      "maxSpeed_kmh": 300,
+      "acceleration_mps2": 0.45,
+      "brake_mps2": 0.6,
+      "stops": [
+        {
+          "node": 5,
+          "dwell_s": 120.0
+        },
+        {
+          "node": 1,
+          "dwell_s": 60.0
+        }
+      ]
+    },
+    {
+      "id": "SIM03",
+      "label": "Granada > Madrid",
+      "route": [
+        -13,
+        -12,
+        -11,
+        -10,
+        -8,
+        -7,
+        -5,
+        -4,
+        -3,
+        -2,
+        -1
+      ],
+      "departure_s": 0,
+      "length_m": 200,
+      "gauge_mm": 1435,
+      "maxSpeed_kmh": 300,
+      "acceleration_mps2": 0.45,
+      "brake_mps2": 0.6,
+      "stops": [
+        {
+          "node": 13,
+          "dwell_s": 120.0
+        },
+        {
+          "node": 9,
+          "dwell_s": 120.0
+        },
+        {
+          "node": 5,
+          "dwell_s": 120.0
+        },
+        {
+          "node": 1,
+          "dwell_s": 60.0
+        }
+      ]
+    },
+    {
+      "id": "SIM04",
+      "label": "Malaga > Madrid",
+      "route": [
+        -9,
+        -8,
+        -7,
+        -5,
+        -4,
+        -3,
+        -2,
+        -1
+      ],
+      "departure_s": 1500,
+      "length_m": 200,
+      "gauge_mm": 1435,
+      "maxSpeed_kmh": 300,
+      "acceleration_mps2": 0.45,
+      "brake_mps2": 0.6,
+      "stops": [
+        {
+          "node": 9,
+          "dwell_s": 120.0
+        },
+        {
+          "node": 8,
+          "dwell_s": 120.0
+        },
+        {
+          "node": 5,
+          "dwell_s": 120.0
+        },
+        {
+          "node": 3,
+          "dwell_s": 120.0
+        },
+        {
+          "node": 2,
+          "dwell_s": 120.0
+        },
+        {
+          "node": 1,
+          "dwell_s": 60.0
+        }
+      ]
+    },
+    {
+      "id": "SIM05",
+      "label": "Madrid > Malaga",
+      "route": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        7,
+        8,
+        9
+      ],
+      "departure_s": 0,
+      "length_m": 200,
+      "gauge_mm": 1435,
+      "maxSpeed_kmh": 300,
+      "acceleration_mps2": 0.45,
+      "brake_mps2": 0.6,
+      "stops": [
+        {
+          "node": 5,
+          "dwell_s": 120.0
+        },
+        {
+          "node": 9,
+          "dwell_s": 120.0
+        },
+        {
+          "node": 10,
+          "dwell_s": 60.0
+        }
+      ]
+    },
+    {
+      "id": "SIM06",
+      "label": "Madrid > Sevilla",
+      "route": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "departure_s": 600,
+      "length_m": 200,
+      "gauge_mm": 1435,
+      "maxSpeed_kmh": 300,
+      "acceleration_mps2": 0.45,
+      "brake_mps2": 0.6,
+      "stops": [
+        {
+          "node": 5,
+          "dwell_s": 120.0
+        },
+        {
+          "node": 7,
+          "dwell_s": 60.0
+        }
+      ]
+    },
+    {
+      "id": "SIM07",
+      "label": "Madrid > Granada",
+      "route": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        7,
+        8,
+        10,
+        11,
+        12,
+        13
+      ],
+      "departure_s": 1200,
+      "length_m": 200,
+      "gauge_mm": 1435,
+      "maxSpeed_kmh": 300,
+      "acceleration_mps2": 0.45,
+      "brake_mps2": 0.6,
+      "stops": [
+        {
+          "node": 5,
+          "dwell_s": 120.0
+        },
+        {
+          "node": 9,
+          "dwell_s": 120.0
+        },
+        {
+          "node": 13,
+          "dwell_s": 120.0
+        },
+        {
+          "node": 14,
+          "dwell_s": 60.0
+        }
+      ]
+    },
+    {
+      "id": "SIM08",
+      "label": "Madrid > Malaga",
+      "route": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        7,
+        8,
+        9
+      ],
+      "departure_s": 1800,
+      "length_m": 200,
+      "gauge_mm": 1435,
+      "maxSpeed_kmh": 300,
+      "acceleration_mps2": 0.45,
+      "brake_mps2": 0.6,
+      "stops": [
+        {
+          "node": 2,
+          "dwell_s": 120.0
+        },
+        {
+          "node": 3,
+          "dwell_s": 120.0
+        },
+        {
+          "node": 5,
+          "dwell_s": 120.0
+        },
+        {
+          "node": 8,
+          "dwell_s": 120.0
+        },
+        {
+          "node": 9,
+          "dwell_s": 120.0
+        },
+        {
+          "node": 10,
+          "dwell_s": 60.0
+        }
+      ]
+    }
+  ],
+  "analysisRoute": [
+    1,
+    2,
+    3,
+    4,
+    5
+  ],
+  "gpsFaults": []
+}

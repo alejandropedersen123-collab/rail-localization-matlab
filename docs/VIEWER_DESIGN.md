@@ -1,6 +1,6 @@
 # Genesis aplicado al visor ferroviario
 
-Referencia: documento `genesis-DESIGN.md` proporcionado por el autor del proyecto. La interfaz se compone de `viewer/template.html`, `viewer/app.js` y las funciones puras de `viewer/analytics.js`. El exportador incorpora las tres partes y los datos en un HTML independiente. La dinámica de MATLAB y sus trayectorias no cambian.
+Referencia: documento `genesis-DESIGN.md` proporcionado por el autor del proyecto. La interfaz se compone de `viewer/template.html`, `viewer/app.js`, las funciones puras de `viewer/analytics.js` y el motor configurable `viewer/network-engine.js`. El exportador incorpora código y datos en un HTML independiente. Los ejemplos regionales y de metro se ejecutan localmente en el navegador.
 
 - Fondo `#FAFAFA`, tarjetas `#FFFFFF`, texto `#0A0A0A` y bordes `#E8E8EC`.
 - Índigo `#6366F1` para reproducción, selección y foco; enlaces y hover con `#4F46E5`. Sin degradados ni sombras en superficies estáticas.
@@ -25,20 +25,22 @@ load('results_network/network_results.mat','results');
 network.export_viewer(results,'results_network');
 ```
 
-También se regenera al ejecutar `rail_network_demo`. La comparación del JSON incorporado antes y después de la ampliación confirmó que nodos, tramos y los tres escenarios (trayectorias, resúmenes y auditorías) permanecen idénticos. Se añaden configuración, versión de esquema y evidencia de sensores, leída del CSV publicado.
+También se regenera al ejecutar `rail_network_demo`. La exportación conserva listas JSON incluso para un único nodo de destino, tramo, vehículo o instante. Incorpora cuatro proyectos y los resultados del laboratorio de sensores.
 
 ## Laboratorio de investigación
 
 Cuatro áreas con navegación por pestañas y teclado separan visión/evidencias, circulación, detección local y costes/despliegue. La portada explica el objetivo de autonomía y distingue resultados del prototipo de objetivos de coste y fiabilidad.
 
-El comparador de sensores incorpora los 17 escenarios completos. El diagrama espacio–tiempo restringe la distancia a los cinco tramos comunes para evitar mezclar ramales distintos. La comparación de llegadas identifica sus cifras como resultados del caso completo. El contador distingue estado local y remoto; el evaluador económico exige datos y permite resultados negativos. Los CSV y JSON se generan en el navegador sin enviar los supuestos introducidos a un servidor.
+El comparador de sensores incorpora los 17 escenarios completos. La portada incluye accesos directos a los trenes y a los costes. La red se elige entre cuatro mapas; el diagrama usa una ruta de referencia configurable. Las condiciones GPS y sus ventanas son ejemplos, con acceso al primer tren afectado en cada ventana.
 
-Las vistas pequeñas permiten desplazamiento dentro de tablas y diagramas. Las categorías se identifican con texto además de color. El estado desconocido no se presenta como vía libre, y los ceros del formulario se distinguen de datos ausentes.
+Los costes se eligen entre tres tamaños preparados, sin campos de entrada de precios. Material y trabajo se muestran por separado, con sus hipótesis y referencias. La configuración técnica de redes queda en un desplegable opcional para autores. CSV y JSON se descargan desde el navegador; los archivos importados no se envían a un servidor.
+
+Las vistas pequeñas permiten desplazamiento dentro de tablas y diagramas. Las categorías se identifican con texto además de color. El estado desconocido no se presenta como vía libre. Las leyendas distinguen fallo GPS, incertidumbre de cobertura y ocupación local.
 
 ## Revisión visual y funcional
 
 Comprobado en Chrome el 30/10/2026: temas claro y oscuro, disposición de escritorio y pantalla de 390 × 844 px. La página móvil no desborda horizontalmente; el desplazamiento se limita al panel del mapa y funciona también con las flechas del teclado. Se comprobaron los tres escenarios, reproducción/pausa, selección de tren, desplazamiento temporal, estado final y apertura de fuentes. La consola no registró errores ni advertencias durante esas acciones. La sintaxis JavaScript pasó `node --check`.
 
-La ampliación de investigación añade 11 grupos de pruebas con `node --test tests/viewer.test.cjs`, todos superados. Se volvieron a ejecutar los 7 grupos de `network.selftest(results)` y los 6 del laboratorio original, sin fallos. No se repitió toda la campaña de simulación: el motor no se modificó y se verificó que el contenido de la red sigue idéntico al publicado previamente.
+La versión configurable supera 20 pruebas Node: lógica de detección, costes preparados, correspondencia con las 68 filas originales de sensores, exportación mínima, validación de configuraciones y comparación de estados físicos entre MATLAB y navegador. Se repitió `validate_network`: los tres casos originales terminan 8/8, sin violaciones auditadas; la diferencia máxima con paso de 0,5 s continúa en 8 s. `validate_configurable` verifica las tres redes adicionales y entradas inválidas. Véase [CONFIGURATION.md](CONFIGURATION.md).
 
-En el navegador se comprobaron la selección de fallos de sensores, la permanencia del estado indeterminado tras recuperar enlace y equilibrar ejes, un caso económico con sobrecoste de 40.000 € (valores exclusivamente de prueba), navegación por áreas y restauración de escenario/tren/instante mediante enlace. Las descargas de sensores (68 filas) y comparación de llegadas (8 filas) se contrastaron con las métricas originales. Móvil sin desbordamiento de página y tema oscuro revisados; consola sin errores observados.
+Revisión de los ejemplos: cuatro redes seleccionables, condiciones GPS, salto a un tren afectado, enlace que restaura metro/tren/instante, tres tamaños de presupuesto y CSV contrastado con las cifras visibles. En 390 × 844 px las tarjetas se apilan y la página no desborda horizontalmente. La carga de archivo por la automatización de Chrome no se pudo ensayar porque la extensión no tiene acceso a archivos locales; el lector y la validación JSON se comprobaron mediante pruebas de código.

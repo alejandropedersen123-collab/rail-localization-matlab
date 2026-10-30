@@ -6,4 +6,5 @@ c.trainLength=200; c.trainMax=330/3.6; c.cruise=300/3.6;
 c.acceleration=.45; c.serviceBrake=.60;
 c.response=2; c.reserve=100; c.releaseMargin=10;
 c.lookahead=12000; c.dwell=120; c.terminalDwell=60;
+c.terminalApproach=3000; c.terminalSpeed=80/3.6;
 end

@@ -24,7 +24,11 @@ for step=0:ceil(c.maxTime/c.dt)-1
     end
     for i=1:N
         if state(i)==0 || state(i)==3, continue; end
-        tr=trains(i);
+        tr=trains(i); vehicle=c;
+        if isfield(tr,'maxSpeed')
+            vehicle.trainMax=tr.maxSpeed; vehicle.cruise=tr.maxSpeed;
+            vehicle.acceleration=tr.acceleration; vehicle.serviceBrake=tr.serviceBrake;
+        end
         if state(i)==2
             if time<dwellUntil(i), continue; end
             if next(i)>numel(tr.stops)
@@ -37,22 +41,26 @@ for step=0:ceil(c.maxTime/c.dt)-1
             % Numerical docking adjustment <15 cm, only at a scheduled station.
             s(i)=stop; v(i)=0; state(i)=2;
             wait=c.dwell;
+            if isfield(tr,'stopDwell'), wait=tr.stopDwell(next(i)); end
             if strcmp(scenario,'station_delay') && i==1 && next(i)==1, wait=wait+1200; end
-            if next(i)==numel(tr.stops), arrival(i)=time; wait=c.terminalDwell; end
+            if next(i)==numel(tr.stops)
+                arrival(i)=time;
+                if ~isfield(tr,'stopDwell'), wait=c.terminalDwell; end
+            end
             stationRecords(end+1,:)={scenario,tr.id,char(tr.stopNames(next(i))),time,wait}; %#ok<AGROW>
             dwellUntil(i)=time+wait; next(i)=next(i)+1;
             continue;
         end
-        [target,limit]=network.speed_target(tr,s(i),v(i),authority(i),stop,net,c);
-        if authority(i)-s(i)<c.lookahead/2 && target<min(c.cruise,limit)-1
+        [target,limit]=network.speed_target(tr,s(i),v(i),authority(i),stop,net,vehicle);
+        if authority(i)-s(i)<c.lookahead/2 && target<min(vehicle.cruise,limit)-1
             deniedSeconds(i)=deniedSeconds(i)+c.dt;
         end
-        a=max(-c.serviceBrake,min(c.acceleration,(target-v(i))/c.dt));
+        a=max(-vehicle.serviceBrake,min(vehicle.acceleration,(target-v(i))/c.dt));
         [s(i),v(i)]=network.advance(s(i),v(i),a,c.dt);
         maxSpeed(i)=max(maxSpeed(i),v(i));
         authorityViolations=authorityViolations+(s(i)>authority(i)+1e-6);
         % Pointwise cap after the physical update, including a crossed boundary.
-        [~,limitNow]=network.speed_target(tr,s(i),v(i),authority(i),stop,net,c);
+        [~,limitNow]=network.speed_target(tr,s(i),v(i),authority(i),stop,net,vehicle);
         limitViolations=limitViolations+(v(i)>limitNow+.05);
     end
     active=state==1 | state==2; maxActive=max(maxActive,sum(active));
@@ -72,10 +80,12 @@ for step=0:ceil(c.maxTime/c.dt)-1
     % Rear-to-front clearance along the follower's directed route, not Euclidean.
     for i=find(active)
         for k=find(active)
-            if i==k || trains(i).direction~=trains(k).direction, continue; end
-            [e,rearX]=network.locate(trains(k),max(0,s(k)-trains(k).trainLength),net);
+            if i==k, continue; end
+            [e,rearX,leaderLeg]=network.locate(trains(k),max(0,s(k)-trains(k).trainLength),net);
             j=find(trains(i).edges==e,1); if isempty(j), continue; end
-            if trains(i).direction<0, rearX=net.edges.Length_km(e)*1000-rearX; end
+            direction=network.edge_direction(trains(i),j);
+            if direction~=network.edge_direction(trains(k),leaderLeg), continue; end
+            if direction<0, rearX=net.edges.Length_km(e)*1000-rearX; end
             mappedRear=trains(i).offsets(j)+rearX;
             gap=mappedRear-s(i);
             if gap>=0 && gap<gaps(i), gaps(i)=gap; leaders(i)=k; end

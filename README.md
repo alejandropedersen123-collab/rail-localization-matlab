@@ -2,7 +2,7 @@
 
 **Objetivo: explorar una arquitectura de conducción automática que pueda reducir el coste total y mejorar la robustez ante fallos.** La referencia funcional es una operación sin conductor a bordo, con supervisión central, como la del metro de Copenhague. El ahorro, la fiabilidad en servicio y la aptitud para operar trenes reales todavía deben demostrarse.
 
-La web reúne tres experimentos revisables: circulación automática de ocho trenes Madrid–Andalucía en MATLAB, comparación de sensores bajo 17 condiciones y detección local de ocupación con entrada/salida de ejes. Incluye un evaluador económico con hipótesis editables. [Propuesta, evidencias, referencias y plan de validación](docs/RESEARCH_CASE.md).
+La web reúne ejemplos listos para explorar: Madrid–Andalucía con ocho trenes, dos redes regionales y un metro en anillo, comparación de sensores bajo 17 condiciones y detección local por entrada/salida de ejes. Los presupuestos de prototipo están preparados: el visitante elige un ejemplo y no introduce precios. [Propuesta, evidencias, referencias y plan de validación](docs/RESEARCH_CASE.md).
 
 La topología y las distancias de referencia se apoyan en documentación de Adif. **Las circulaciones, salidas, límites locales y separaciones son del modelo**: no son posiciones reales de los ocho trenes mencionados en las noticias ni un horario oficial. Cada distancia tiene su procedencia y grado de aproximación en [Datos contrastados](docs/REAL_DATA.md).
 
@@ -17,20 +17,20 @@ Descarga el repositorio y abre **[`results_network/visor.html`](results_network/
 El laboratorio tiene cuatro áreas:
 
 - **Visión y evidencias:** compara las cuatro arquitecturas de sensores en los 17 escenarios, incluyendo deriva compartida, mapas erróneos y frenado insuficiente. Descarga las métricas incorporadas.
-- **Red automática:** reproduce los ocho trenes, compara llegadas con el caso nominal y explora un diagrama espacio–tiempo del tronco compartido. Exporta la comparación o comparte un enlace con escenario, tren e instante.
+- **Red automática:** elige uno de cuatro mapas y una condición GPS. Reproduce los trenes, salta a los momentos preparados de pérdida de señal o cobertura desconocida y explora su diagrama espacio–tiempo. Los enlaces de ejemplos conservan red, GPS, escenario, tren e instante.
 - **Detección local:** registra entrada, parada y salida de ejes; corta el enlace remoto o introduce un fallo del detector. La ocupación local se conserva sin enlace remoto y una avería conocida retiene el estado indeterminado. Registro exportable en JSON.
-- **Coste y despliegue:** introduce inversión, mantenimiento y costes evitables; calcula coste total, balance y recuperación simple. No incorpora precios supuestos ni presupone un ahorro.
+- **Coste y despliegue:** compara tres tamaños de prototipo con bandas de material y trabajo ya calculadas. Las hipótesis y referencias están visibles; no son presupuestos de instalación ferroviaria ni pruebas de ahorro.
 
-Son experimentos separados: el estimador de sensores y el demostrador de ejes aún no alimentan al regulador de la red. Los ocho trenes utilizan posición y ocupación ideales. No se implementan funciones completas de ATO/ATP/ATS, puertas, evacuación ni control de instalaciones reales.
+Son experimentos separados: el estimador de sensores y el demostrador de ejes aún no alimentan al regulador de la red. Los reguladores de tráfico utilizan posición y ocupación ideales. Las condiciones GPS del mapa son hipotéticas y no alteran todavía esas trayectorias. No se implementan funciones completas de ATO/ATP/ATS, puertas, evacuación ni control de instalaciones reales.
 
 La interfaz sigue el diseño **Genesis**: General Sans, DM Sans y JetBrains Mono, superficies claras, controles índigo y temas claro/oscuro. En móvil, el mapa se desplaza horizontalmente para conservar etiquetas legibles. [Criterios de diseño](docs/VIEWER_DESIGN.md).
 
-La publicación usa GitHub Pages sobre la rama `main`, carpeta raíz, con `.nojekyll`. `index.html` abre el visor generado. Pages sirve el HTML y JavaScript; no ejecuta MATLAB en un servidor. Para publicar resultados nuevos, regenera el visor en MATLAB y sube los cambios a `main`.
+La publicación usa GitHub Pages sobre la rama `main`, carpeta raíz, con `.nojekyll`. `index.html` abre el visor generado. Pages sirve el HTML y JavaScript; no ejecuta MATLAB en un servidor. Madrid–Andalucía reproduce resultados MATLAB incorporados y las otras plantillas se calculan en el navegador, sin servidor de pago. Para publicar resultados nuevos, regenera el visor en MATLAB y sube los cambios a `main`.
 
-Los cálculos del visor están en `viewer/analytics.js`, la interacción en `viewer/app.js` y la interfaz Genesis en `viewer/template.html`. MATLAB los incorpora en un único HTML junto a los resultados. Para verificar las funciones web y la correspondencia de las evidencias con sus CSV:
+El motor configurable del navegador está en `viewer/network-engine.js`, los cálculos del visor en `viewer/analytics.js`, la interacción en `viewer/app.js` y la interfaz Genesis en `viewer/template.html`. MATLAB los incorpora en un único HTML junto a los resultados. Para verificar las funciones web y la correspondencia de las evidencias con sus CSV:
 
 ```sh
-node --test tests/viewer.test.cjs
+node --test tests/*.test.cjs
 ```
 
 ## Ejecutar la red en MATLAB
@@ -40,6 +40,7 @@ MATLAB R2026a, sin Simulink ni toolboxes adicionales:
 ```matlab
 results = rail_network_demo;  % Tres escenarios, tablas, figuras y visor
 report = validate_network;   % Pruebas de física, recursos y escenarios completos
+validate_configurable;       % Plantillas, referencias para Node y exportación mínima
 ```
 
 | Elemento | Implementación |
@@ -58,6 +59,20 @@ No se asigna una separación universal: se calcula entre la cabeza del seguidor 
 - [Comprobaciones ejecutadas](results_network/checks.csv) y [convergencia del paso temporal](results_network/convergence.csv)
 - [Entorno, resultados de validación y límites observados](docs/NETWORK_VALIDATION.md)
 - [Resultados nominales por tren](results_network/nominal/trains.csv), [interrupción](results_network/signal_outage/trains.csv) y [parada prolongada](results_network/station_delay/trains.csv)
+
+## Adaptar otra red
+
+La infraestructura y los trenes se definen en JSON, sin modificar el motor. Hay ejemplos de ancho estándar (1435 mm), ibérico (1668 mm) y métrico (1000 mm), vía única/doble, ramificaciones y un anillo. Los mapas regionales y de metro son ficticios. [Formato y límites de configuración](docs/CONFIGURATION.md).
+
+```matlab
+options = struct('project','networks/regional-metrico.json', ...
+    'scenarios',{{'nominal'}});
+results = rail_network_demo('mi_red',options);
+```
+
+En la web, «Para autores» permite importar o descargar un JSON. La compatibilidad con un ancho y una topología no acredita compatibilidad operativa con cualquier red española: no se modelan electrificación, gálibos, cambiadores de ancho, señalización real ni todas las maniobras.
+
+[Presupuestos preparados y procedencia de los rangos](docs/COST_EXAMPLES.md).
 
 ## Laboratorio original: localización y fallos de sensores
 
