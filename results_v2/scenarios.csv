@@ -1,0 +1,18 @@
+id,name,duration,hasObstacle,fault,faultStart,faultEnd,brake,mu,downhill,mapMode,lateralSigma,mapOffset,trackSeparation,trueTrack
+1,Nominal approach,110,1,none,25,65,0.55,0.3,0,trusted,0.6,0,20,1
+2,GNSS outage,110,1,gnss_outage,25,65,0.55,0.3,0,trusted,0.6,0,20,1
+3,GNSS jump,110,1,gnss_jump,25,65,0.55,0.3,0,trusted,0.6,0,20,1
+4,Range outlier,110,1,range_outlier,25,65,0.55,0.3,0,trusted,0.6,0,20,1
+5,Stale peer message,110,1,stale,25,65,0.55,0.3,0,trusted,0.6,0,20,1
+6,Motion sensor loss,110,1,motion_loss,25,65,0.55,0.3,0,trusted,0.6,0,20,1
+7,Parallel tracks,110,1,map,0,65,0.55,0.3,0,measured,6,0,4,1
+8,Weak brakes,300,1,weak_brake,0,65,0.12,0.3,0,trusted,0.6,0,20,1
+9,Clear track,180,0,none,25,65,0.55,0.3,0,trusted,0.6,0,20,1
+10,Clear track GNSS loss,180,0,gnss_outage,25,65,0.55,0.3,0,trusted,0.6,0,20,1
+11,Common position drift,110,1,common_drift,25,65,0.55,0.3,0,trusted,0.6,0,20,1
+12,Map displaced,110,1,map,0,65,0.55,0.3,0,measured,0.6,50,4,1
+13,Map alias,110,1,map,0,65,0.55,0.3,0,measured,0.6,-4,4,1
+14,Downhill low adhesion,240,1,adhesion,0,65,0.55,0.035,0.015,trusted,0.6,0,20,1
+15,Clear track ambiguity,180,0,map,0,65,0.55,0.3,0,measured,6,0,4,1
+16,Wheel slip,110,1,wheel_slip,25,65,0.55,0.3,0,trusted,0.6,0,20,1
+17,Clear track phantom peer,180,0,phantom_peer,25,65,0.55,0.3,0,trusted,0.6,0,20,1

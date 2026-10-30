@@ -1,0 +1,69 @@
+Scenario,Contrast,From,To,DeltaRMSE_m,DeltaCollisionTrials,DeltaNoObstacleBrakeTrials
+Nominal approach,Controls with GPS,GPS,GPS + controls,0,0,0
+Nominal approach,Controls with fusion,Fusion,Fusion + controls,0,0,0
+Nominal approach,Fusion without controls,GPS,Fusion,-1.63018797817747,0,0
+Nominal approach,Fusion with controls,GPS + controls,Fusion + controls,-1.63018797817747,0,0
+GNSS outage,Controls with GPS,GPS,GPS + controls,0,0,0
+GNSS outage,Controls with fusion,Fusion,Fusion + controls,0,0,0
+GNSS outage,Fusion without controls,GPS,Fusion,-4.62420522194995,0,0
+GNSS outage,Fusion with controls,GPS + controls,Fusion + controls,-4.62420522194995,0,0
+GNSS jump,Controls with GPS,GPS,GPS + controls,-241.747637253339,-1,0
+GNSS jump,Controls with fusion,Fusion,Fusion + controls,-171.903413048681,-1,0
+GNSS jump,Fusion without controls,GPS,Fusion,-74.4684294266078,0,0
+GNSS jump,Fusion with controls,GPS + controls,Fusion + controls,-4.62420522194995,0,0
+Range outlier,Controls with GPS,GPS,GPS + controls,0,0,0
+Range outlier,Controls with fusion,Fusion,Fusion + controls,0,0,0
+Range outlier,Fusion without controls,GPS,Fusion,-1.63018797817747,0,0
+Range outlier,Fusion with controls,GPS + controls,Fusion + controls,-1.63018797817747,0,0
+Stale peer message,Controls with GPS,GPS,GPS + controls,0,-1,0
+Stale peer message,Controls with fusion,Fusion,Fusion + controls,0,-1,0
+Stale peer message,Fusion without controls,GPS,Fusion,-1.63018797817747,0,0
+Stale peer message,Fusion with controls,GPS + controls,Fusion + controls,-1.63018797817747,0,0
+Motion sensor loss,Controls with GPS,GPS,GPS + controls,0,0,0
+Motion sensor loss,Controls with fusion,Fusion,Fusion + controls,0,0,0
+Motion sensor loss,Fusion without controls,GPS,Fusion,-13.1887090429701,0,0
+Motion sensor loss,Fusion with controls,GPS + controls,Fusion + controls,-13.1887090429701,0,0
+Parallel tracks,Controls with GPS,GPS,GPS + controls,0,0,0
+Parallel tracks,Controls with fusion,Fusion,Fusion + controls,0,0,0
+Parallel tracks,Fusion without controls,GPS,Fusion,-1.63018797817747,0,0
+Parallel tracks,Fusion with controls,GPS + controls,Fusion + controls,-1.63018797817747,0,0
+Weak brakes,Controls with GPS,GPS,GPS + controls,0,0,0
+Weak brakes,Controls with fusion,Fusion,Fusion + controls,0,0,0
+Weak brakes,Fusion without controls,GPS,Fusion,-1.62929404172237,0,0
+Weak brakes,Fusion with controls,GPS + controls,Fusion + controls,-1.62929404172237,0,0
+Clear track,Controls with GPS,GPS,GPS + controls,0,0,0
+Clear track,Controls with fusion,Fusion,Fusion + controls,0,0,0
+Clear track,Fusion without controls,GPS,Fusion,-1.54576989020036,0,0
+Clear track,Fusion with controls,GPS + controls,Fusion + controls,-1.54576989020036,0,0
+Clear track GNSS loss,Controls with GPS,GPS,GPS + controls,0,0,1
+Clear track GNSS loss,Controls with fusion,Fusion,Fusion + controls,0,0,0
+Clear track GNSS loss,Fusion without controls,GPS,Fusion,-3.65228112102489,0,0
+Clear track GNSS loss,Fusion with controls,GPS + controls,Fusion + controls,-3.65228112102489,0,-1
+Common position drift,Controls with GPS,GPS,GPS + controls,0,0,0
+Common position drift,Controls with fusion,Fusion,Fusion + controls,0,0,0
+Common position drift,Fusion without controls,GPS,Fusion,-6.72011326485831,0,0
+Common position drift,Fusion with controls,GPS + controls,Fusion + controls,-6.72011326485831,0,0
+Map displaced,Controls with GPS,GPS,GPS + controls,0,0,0
+Map displaced,Controls with fusion,Fusion,Fusion + controls,0,0,0
+Map displaced,Fusion without controls,GPS,Fusion,-1.63018797817747,0,0
+Map displaced,Fusion with controls,GPS + controls,Fusion + controls,-1.63018797817747,0,0
+Map alias,Controls with GPS,GPS,GPS + controls,0,0,0
+Map alias,Controls with fusion,Fusion,Fusion + controls,0,0,0
+Map alias,Fusion without controls,GPS,Fusion,-1.63018797817747,0,0
+Map alias,Fusion with controls,GPS + controls,Fusion + controls,-1.63018797817747,0,0
+Downhill low adhesion,Controls with GPS,GPS,GPS + controls,0,0,0
+Downhill low adhesion,Controls with fusion,Fusion,Fusion + controls,0,0,0
+Downhill low adhesion,Fusion without controls,GPS,Fusion,-1.66824232868074,0,0
+Downhill low adhesion,Fusion with controls,GPS + controls,Fusion + controls,-1.66824232868074,0,0
+Clear track ambiguity,Controls with GPS,GPS,GPS + controls,0,0,1
+Clear track ambiguity,Controls with fusion,Fusion,Fusion + controls,0,0,1
+Clear track ambiguity,Fusion without controls,GPS,Fusion,-1.54576989020036,0,0
+Clear track ambiguity,Fusion with controls,GPS + controls,Fusion + controls,-1.54576989020036,0,0
+Wheel slip,Controls with GPS,GPS,GPS + controls,0,0,0
+Wheel slip,Controls with fusion,Fusion,Fusion + controls,-92.3902964549558,-1,0
+Wheel slip,Fusion without controls,GPS,Fusion,91.2626658001414,1,0
+Wheel slip,Fusion with controls,GPS + controls,Fusion + controls,-1.12763065481432,0,0
+Clear track phantom peer,Controls with GPS,GPS,GPS + controls,0,0,0
+Clear track phantom peer,Controls with fusion,Fusion,Fusion + controls,0,0,0
+Clear track phantom peer,Fusion without controls,GPS,Fusion,-1.54576989020036,0,0
+Clear track phantom peer,Fusion with controls,GPS + controls,Fusion + controls,-1.54576989020036,0,0

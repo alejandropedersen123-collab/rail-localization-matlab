@@ -1,0 +1,69 @@
+ScenarioID,Scenario,Architecture,Runs,HasObstacle,OpenRMSE_m,Formal3SigmaCoverage,OpenAlertMedian_s,FaultResponseMedian_s,LateOrMissingAlertTrials,NoObstacleHazardAlarmTrials,DiagnosticAlertTrials,NoObstacleBrakeTrials,ClosedCollisionTrials,ClosedStoppedTrials,ClosedFinalClearanceMean_m,BrakeCommandMedian_s,ConsistencyRejectMean,WrongConfidentTrackFraction,UnknownTrackFraction
+1,Nominal approach,GPS,3,1,2.2143254047125,1,38,NaN,0,0,0,0,0,3,216.453077651505,38,0,0,0
+1,Nominal approach,GPS + controls,3,1,2.2143254047125,1,30.6,NaN,0,0,0,0,0,3,383.119744318171,30.6,0,0,0
+1,Nominal approach,Fusion,3,1,0.734027061448644,1,38.4,NaN,0,0,0,0,0,3,201.453077651506,38.4,0,0,0
+1,Nominal approach,Fusion + controls,3,1,0.734027061448644,1,37.2,NaN,0,0,0,0,0,3,233.119744318172,37.2,0,0,0
+2,GNSS outage,GPS,3,1,6.3544655510472,1,39.2,Inf,0,0,0,0,0,3,176.453077651505,39.2,0,0,0
+2,GNSS outage,GPS + controls,3,1,6.3544655510472,1,26.2,1.2,0,0,3,0,0,3,508.119744318172,26.2,0,0,0
+2,GNSS outage,Fusion,3,1,0.764804169271429,1,38.4,Inf,0,0,0,0,0,3,203.119744318172,38.4,0,0,0
+2,GNSS outage,Fusion + controls,3,1,0.764804169271429,1,37.2,Inf,0,0,0,0,0,3,233.119744318172,37.2,0,0,0
+3,GNSS jump,GPS,3,1,247.587757221165,0.50151240169389,53,Inf,3,0,0,0,3,3,-165.213589015161,53,0,0,0
+3,GNSS jump,GPS + controls,3,1,6.3544655510472,1,26.2,0,0,0,3,0,0,3,508.119744318172,26.2,40,0,0
+3,GNSS jump,Fusion,3,1,113.689216679955,0.226860254083485,44.8,Inf,0,0,0,0,0,3,44.7864109848387,44.8,0,0,0
+3,GNSS jump,Fusion + controls,3,1,0.764804169271429,1,37.2,0,0,0,0,0,0,3,233.119744318172,37.2,40,0,0
+4,Range outlier,GPS,3,1,2.2143254047125,1,38,Inf,0,0,0,0,0,3,216.453077651505,38,0,0,0
+4,Range outlier,GPS + controls,3,1,2.2143254047125,1,30.6,Inf,0,0,0,0,0,3,383.119744318171,30.6,0,0,0
+4,Range outlier,Fusion,3,1,23.1239211231105,0.235934664246824,40.6,Inf,0,0,0,0,0,3,149.786410984839,40.6,0,0,0
+4,Range outlier,Fusion + controls,3,1,0.729788025873377,1,37.2,0,0,0,0,0,0,3,233.119744318172,37.2,40,0,0
+5,Stale peer message,GPS,3,1,2.2143254047125,1,Inf,Inf,3,0,0,0,3,0,-950,Inf,0,0,0
+5,Stale peer message,GPS + controls,3,1,2.2143254047125,1,26.2,1.2,0,0,3,0,0,3,508.119744318172,26.2,0,0,0
+5,Stale peer message,Fusion,3,1,0.734027061448644,1,Inf,Inf,3,0,0,0,3,0,-950,Inf,0,0,0
+5,Stale peer message,Fusion + controls,3,1,0.734027061448644,1,26.2,1.2,0,0,3,0,0,3,508.119744318172,26.2,0,0,0
+6,Motion sensor loss,GPS,3,1,16.6590161814684,1,39.2,Inf,0,0,0,0,0,3,176.453077651505,39.2,0,0,0
+6,Motion sensor loss,GPS + controls,3,1,16.6590161814684,1,26.2,1.2,0,0,3,0,0,3,508.119744318172,26.2,0,0,0
+6,Motion sensor loss,Fusion,3,1,1.58026500465671,1,38.4,Inf,0,0,0,0,0,3,201.453077651506,38.4,0,0,0
+6,Motion sensor loss,Fusion + controls,3,1,1.58026500465671,1,27,2,0,0,3,0,0,3,488.119744318172,27,0,0,0
+7,Parallel tracks,GPS,3,1,2.2143254047125,1,38,Inf,0,0,0,0,0,3,216.453077651505,38,0,0,1
+7,Parallel tracks,GPS + controls,3,1,2.2143254047125,1,0,0,0,0,3,0,0,3,1163.11974431818,0,0,0,1
+7,Parallel tracks,Fusion,3,1,0.734027061448644,1,38.4,Inf,0,0,0,0,0,3,201.453077651506,38.4,0,0,1
+7,Parallel tracks,Fusion + controls,3,1,0.734027061448644,1,0,0,0,0,3,0,0,3,1163.11974431818,0,0,0,1
+8,Weak brakes,GPS,3,1,2.20740544374235,1,38,Inf,3,0,0,0,3,3,-1819.57208333341,38,0,0,0
+8,Weak brakes,GPS + controls,3,1,2.20740544374235,1,30.6,Inf,3,0,0,0,3,3,-1652.90541666673,30.6,0,0,0
+8,Weak brakes,Fusion,3,1,0.629211442358404,1,38.4,Inf,3,0,0,0,3,3,-1831.23875000007,38.4,0,0,0
+8,Weak brakes,Fusion + controls,3,1,0.629211442358404,1,37.2,Inf,3,0,0,0,3,3,-1802.90541666674,37.2,0,0,0
+9,Clear track,GPS,3,0,2.1853490320333,1,Inf,NaN,0,0,0,0,0,0,NaN,Inf,0,0,0
+9,Clear track,GPS + controls,3,0,2.1853490320333,1,Inf,NaN,0,0,0,0,0,0,NaN,Inf,0,0,0
+9,Clear track,Fusion,3,0,0.526314286171639,1,Inf,NaN,0,0,0,0,0,0,NaN,Inf,0,0,0
+9,Clear track,Fusion + controls,3,0,0.526314286171639,1,Inf,NaN,0,0,0,0,0,0,NaN,Inf,0,0,0
+10,Clear track GNSS loss,GPS,3,0,5.20891893468069,1,Inf,Inf,0,0,0,0,0,0,NaN,Inf,0,0,0
+10,Clear track GNSS loss,GPS + controls,3,0,5.20891893468069,1,26.2,1.2,0,0,3,3,0,3,NaN,26.2,0,0,0
+10,Clear track GNSS loss,Fusion,3,0,0.607011795571812,1,Inf,Inf,0,0,0,0,0,0,NaN,Inf,0,0,0
+10,Clear track GNSS loss,Fusion + controls,3,0,0.607011795571812,1,Inf,Inf,0,0,0,0,0,0,NaN,Inf,0,0,0
+11,Common position drift,GPS,3,1,20.9033615678671,0.311554748941319,40,Inf,0,0,0,0,0,3,161.453077651505,40,0,0,0
+11,Common position drift,GPS + controls,3,1,20.9033615678671,0.311554748941319,33,Inf,0,0,0,0,0,3,331.453077651505,33,0,0,0
+11,Common position drift,Fusion,3,1,15.1095072949236,0.314579552329099,38.6,Inf,0,0,0,0,0,3,199.786410984839,38.6,0,0,0
+11,Common position drift,Fusion + controls,3,1,15.019940523109,0.314579552329099,37.4,35,0,0,0,0,0,3,229.786410984839,37.4,1,0,0
+12,Map displaced,GPS,3,1,2.2143254047125,1,38,Inf,0,0,0,0,0,3,216.453077651505,38,0,0,1
+12,Map displaced,GPS + controls,3,1,2.2143254047125,1,0,0,0,0,3,0,0,3,1163.11974431818,0,0,0,1
+12,Map displaced,Fusion,3,1,0.734027061448644,1,38.4,Inf,0,0,0,0,0,3,201.453077651506,38.4,0,0,1
+12,Map displaced,Fusion + controls,3,1,0.734027061448644,1,0,0,0,0,3,0,0,3,1163.11974431818,0,0,0,1
+13,Map alias,GPS,3,1,2.2143254047125,1,38,Inf,0,0,0,0,0,3,216.453077651505,38,0,1,0
+13,Map alias,GPS + controls,3,1,2.2143254047125,1,30.6,Inf,0,0,0,0,0,3,383.119744318171,30.6,0,1,0
+13,Map alias,Fusion,3,1,0.734027061448644,1,38.4,Inf,0,0,0,0,0,3,201.453077651506,38.4,0,1,0
+13,Map alias,Fusion + controls,3,1,0.734027061448644,1,37.2,Inf,0,0,0,0,0,3,233.119744318172,37.2,0,1,0
+14,Downhill low adhesion,GPS,3,1,2.1825755093516,1,38,Inf,3,0,0,0,3,3,-822.281890252648,38,0,0,0
+14,Downhill low adhesion,GPS + controls,3,1,2.1825755093516,1,30.6,Inf,3,0,0,0,3,3,-655.615223585983,30.6,0,0,0
+14,Downhill low adhesion,Fusion,3,1,0.603918858865322,1,38.4,Inf,3,0,0,0,3,3,-837.281890252649,38.4,0,0,0
+14,Downhill low adhesion,Fusion + controls,3,1,0.603918858865322,1,37.4,Inf,3,0,0,0,3,3,-808.948556919314,37.4,0,0,0
+15,Clear track ambiguity,GPS,3,0,2.1853490320333,1,Inf,Inf,0,0,0,0,0,0,NaN,Inf,0,0,1
+15,Clear track ambiguity,GPS + controls,3,0,2.1853490320333,1,0,0,0,0,3,3,0,3,NaN,0,0,0,1
+15,Clear track ambiguity,Fusion,3,0,0.526314286171639,1,Inf,Inf,0,0,0,0,0,0,NaN,Inf,0,0,1
+15,Clear track ambiguity,Fusion + controls,3,0,0.526314286171639,1,0,0,0,0,3,3,0,3,NaN,0,0,0,1
+16,Wheel slip,GPS,3,1,2.2143254047125,1,38,Inf,0,0,0,0,0,3,216.453077651505,38,0,0,0
+16,Wheel slip,GPS + controls,3,1,2.2143254047125,1,30.6,Inf,0,0,0,0,0,3,383.119744318171,30.6,0,0,0
+16,Wheel slip,Fusion,3,1,82.5556330593963,0.228070175438597,60,Inf,3,0,0,0,3,3,-336.880255681828,60,0,0,0
+16,Wheel slip,Fusion + controls,3,1,1.09637397481171,1,34.8,0,0,0,0,0,0,3,284.786410984838,34.8,200,0,0
+17,Clear track phantom peer,GPS,3,0,2.1853490320333,1,25,Inf,0,3,0,3,0,3,NaN,25,0,0,0
+17,Clear track phantom peer,GPS + controls,3,0,2.1853490320333,1,25,Inf,0,3,0,3,0,3,NaN,25,0,0,0
+17,Clear track phantom peer,Fusion,3,0,0.526314286171639,1,25,Inf,0,3,0,3,0,3,NaN,25,0,0,0
+17,Clear track phantom peer,Fusion + controls,3,0,0.526314286171639,1,25,Inf,0,3,0,3,0,3,NaN,25,0,0,0

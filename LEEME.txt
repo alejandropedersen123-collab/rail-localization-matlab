@@ -1,0 +1,191 @@
+SIMULADOR MODULAR DE OBSERVACIÓN FERROVIARIA — VERSIÓN 2
+Prototipo de investigación / MATLAB base / 29 de octubre de 2026
+
+EJECUTAR
+
+Abrir esta carpeta en MATLAB y ejecutar:
+    results = rail_modular_demo;
+
+Por defecto: 17 escenarios, 30 semillas por escenario y cuatro configuraciones.
+Son 510 combinaciones escenario/semilla, 2.040 ensayos de arquitectura y 4.080
+simulaciones al contar reproducción sin actuación y lazo cerrado por separado.
+No son 4.080 situaciones diferentes ni pruebas de fiabilidad ferroviaria.
+MATLAB R2026a; sin Simulink ni toolboxes adicionales. MATLAB requiere licencia.
+
+Salida alternativa, número de semillas y gráficos opcionales:
+    results = rail_modular_demo(fullfile(pwd,'prueba'),2,struct('makePlots',false));
+
+Demostración de sustitución de un módulo:
+    comparison = compare_sensor_module(results);
+También puede cargar la ejecución guardada con:
+    comparison = compare_sensor_module;
+Repite los 17 escenarios y cuatro configuraciones para la semilla 1001,
+sustituyendo únicamente el adaptador por uno sin distancias terrestres.
+Comprueba que las salidas GPS quedan idénticas y compara el efecto en la fusión.
+No repite las treinta semillas en esta demostración de sustitución.
+
+DISEÑO DE LA COMPARACIÓN
+
+Factores separados:
+  1. GPS: filtro de posición/velocidad con GNSS longitudinal.
+  2. GPS + controles: mismo conjunto de sensores y controles activados.
+  3. Fusión: aceleración, velocidad de rueda, GNSS y distancias a tres anclas.
+  4. Fusión + controles: mismo conjunto de sensores y controles activados.
+
+El factor «controles» agrupa rechazo NIS de medidas incoherentes, margen con
+incertidumbre formal, antigüedad de mensajes, disponibilidad e identidad de vía.
+Los cuatro usan un supervisor de margen de parada. Por tanto, «sin controles»
+no significa ausencia de cualquier aviso. Los efectos de cada control individual
+todavía no están aislados; factor_effects.csv compara los dos factores agrupados.
+
+En REPLAY, todos recorren la misma trayectoria a 25 m/s y reciben exactamente
+las mismas observaciones brutas. No frenan: se comparan estimación y avisos.
+Los ruidos se generan por canal antes del ensayo, sin consumir azar en los filtros.
+
+En CLOSED LOOP, el primer aviso activa una orden hipotética de frenado que queda
+enclavada. Tras 2 s de reacción, la fuerza crece linealmente durante 1,5 s.
+Después queda limitada por el freno disponible y la adherencia; se incluye la
+pendiente descendente en el caso correspondiente. El tren se detiene sin invertir
+el sentido. Sus sensores observan entonces esa trayectoria modificada.
+Las realizaciones de ruido se conservan entre configuraciones, pero después de
+actuar las medidas reales divergen porque las trayectorias son distintas.
+
+Se integran exactamente las fases del modelo longitudinal, incluido el instante
+de parada. No se modelan ejes, composición, propagación neumática, vibraciones
+estructurales, interacción con la tracción ni dinámica detallada del contacto.
+El modelo mantiene velocidad constante antes del frenado y durante la reacción.
+
+El supervisor presupone vía llana y 0,45 m/s2 de desaceleración; no recibe la
+adherencia ni el frenado reales del generador. Esa discrepancia expone sus límites.
+El frenado real es 0,55 m/s2 salvo casos específicos. El obstáculo estacionario
+está a 1.800 m; la reserva del supervisor es 80 m. Estos valores son didácticos.
+
+ESCENARIOS
+
+ 1. Aproximación nominal al obstáculo.
+ 2. GNSS ausente entre 25 y 65 s.
+ 3. GNSS desplazado -400 m entre 25 y 65 s.
+ 4. Una distancia terrestre tiene +1.000 m de error entre 25 y 65 s.
+ 5. Desde 25 s se repite un mensaje con posición a 5.000 m e instante original 24 s.
+ 6. Desde 25 s desaparecen GNSS, odometría, aceleración útil y distancias.
+ 7. Dos vías rectas separadas 4 m con observación lateral de sigma 6 m.
+ 8. Frenado real de 0,12 m/s2. A 25 m/s y 1.800 m, incluso frenar desde el inicio
+    sería insuficiente según este modelo: no es un fallo que el aviso pueda reparar.
+ 9. Trayecto sin obstáculo ni fallo.
+10. Trayecto sin obstáculo con pérdida de GNSS.
+11. Deriva de posición compartida por GNSS y todas las distancias: -0,7 m/s
+    entre 25 y 65 s, conservando después el sesgo alcanzado de -28 m.
+12. Mapa lateral desplazado 50 m: se comprueba inconsistencia geométrica.
+13. Mapa desplazado una vía: puede asignar con confianza una identidad incorrecta.
+14. Pendiente descendente 1,5% y adherencia 0,035: frenado efectivo inferior
+    al supuesto. Parámetros hipotéticos, no una caracterización de vía o material.
+15. Trayecto sin obstáculo con ambigüedad de vía.
+16. Velocidad de rueda sesgada -8 m/s entre 25 y 65 s.
+17. Trayecto sin obstáculo pero con un mensaje falso y reciente que anuncia uno
+    a 1.000 m desde 25 s. Expone falsas alarmas por información de ocupación errónea.
+
+MÓDULOS IMPLEMENTADOS
+
+rail_modular_demo.m       Orquestación, exportación y verificaciones globales.
++rail/default_config.m   Parámetros del experimento.
++rail/scenarios.m        Escenarios y verdad de referencia, ajena al estimador.
++rail/noise.m            Canales de ruido reproducibles, semillas 1001...1030.
++rail/sensor_sample.m    Adaptador de observaciones sintéticas.
++rail/sensor_without_ranges.m  Sustitución demostrable del adaptador.
++rail/estimator_step.m   Predicción, fusión y rechazo opcional de medidas.
++rail/track_step.m       Dos hipótesis de vía recta con observación lateral.
++rail/supervisor_step.m  Margen y avisos diferenciados.
++rail/plant_step.m       Reacción y dinámica de frenado en lazo cerrado.
++rail/stopping_distance.m  Distancia analítica usada para evaluación.
++rail/evaluate.m         Métricas por ensayo.
++rail/summarize.m        Agregados por escenario/configuración.
++rail/factor_effects.m   Contrastes entre configuraciones.
++rail/plot_results.m     Gráficas.
++rail/write_report.m     Informe de medidas de cada ejecución.
++rail/selftest.m         Pruebas de física, comparación y sustitución de módulos.
+compare_sensor_module.m  Repetición de escenarios con un adaptador distinto.
+
+RESULTADOS: results_v2/
+
+summary.csv: 68 filas, una por escenario/configuración.
+trials.csv: 2.040 filas para la ejecución por defecto.
+scenarios.csv: parámetros específicos de cada escenario.
+factor_effects.csv: diferencias entre configuraciones, sin inferencia estadística.
+checks.csv: pruebas deterministas superadas.
+scenario_XX_arch_Y_replay.csv y _closed.csv: trazas de la primera semilla.
+rail_results.mat: configuración, ejemplos y resultados de MATLAB.
+overview.png, braking.png y degradation.png: figuras.
+RESULTADOS.txt: explicación generada a partir de las medidas de esa ejecución.
+
+Métricas y lectura correcta:
+- OpenRMSE_m: error de posición en replay; media del RMSE de cada ensayo.
+- Formal3SigmaCoverage: fracción de muestras cuyo error está dentro de +/-3 sigma.
+  Es una comprobación empírica del modelo; NO un nivel de protección certificado.
+- OpenAlertMedian_s: primer aviso desde el inicio. Inf significa sin aviso.
+- FaultResponseMedian_s: primer rechazo de medida o aviso diagnóstico desde el
+  inicio programado del fallo. No demuestra que se identificase su causa;
+  Inf significa sin respuesta de ese tipo y NaN que no hay fallo programado.
+- LateOrMissingAlertTrials: primer aviso posterior al último instante que permitiría
+  parar ante el obstáculo, según la dinámica real de ESTE modelo. En trials.csv,
+  LastSafeCommand_s negativo indica que ya no era posible desde el inicio.
+  No aplica a escenarios sin obstáculo; revisar HasObstacle antes de interpretarlo.
+- NoObstacleHazardAlarmTrials: ensayos sin obstáculo con aviso por margen de peligro.
+  Los escenarios sin obstáculo no anuncian ninguno salvo el caso 17; no representan
+  toda la variedad real de falsas alarmas de ocupación.
+- DiagnosticAlertTrials: avisos por datos antiguos, insuficientes o vía desconocida.
+  Se separan de falsas alarmas de peligro, aunque también activan freno en el modelo.
+- NoObstacleBrakeTrials: ensayos con orden de frenado sin obstáculo real; recoge
+  tanto falsas alarmas de peligro como respuestas conservadoras de diagnóstico.
+- ClosedCollisionTrials: cruces geométricos de la posición del obstáculo en lazo
+  cerrado. No se modela el impacto: la trayectoria matemática continúa tras cruzar.
+- ClosedFinalClearanceMean_m: distancia al obstáculo al terminar la simulación;
+  negativa si lo ha sobrepasado. Revisar ClosedStoppedTrials: no siempre es
+  distancia final de parada si el tren continúa en movimiento al acabar el horizonte.
+- WrongConfidentTrackFraction y UnknownTrackFraction: fracciones de muestras con
+  identidad de vía incorrecta considerada conocida, o con identidad desconocida.
+
+results_v2_no_ranges/ guarda la demostración de sustitución para una semilla.
+module_comparison.csv compara sus resultados con la misma semilla de referencia.
+Este repositorio contiene únicamente la versión modular v2. Las trazas completas
+de la primera semilla y rail_results.mat se regeneran al ejecutar el código;
+se excluyen del control de versiones para mantener la descarga compacta.
+
+LÍMITES
+
+- El posicionamiento longitudinal sigue siendo 1D. track_step añade solo una
+  comparación lateral entre dos vías rectas, con prior igual y una medida cada vez.
+  No resuelve redes, curvas o desvíos, ni estima una trayectoria 2D completa.
+  Fuera de los casos de mapa, la identidad de vía se presupone conocida.
+- La identidad de vía no se usa para descartar obstáculos. La ocupación del modelo
+  siempre corresponde al trayecto verdadero; no se simula un enclavamiento.
+- Un mapa coherente pero equivocado puede engañar al módulo de identidad.
+- Las distancias a tres anclas son sintéticas, con sigma 8 m y coordenadas conocidas.
+  No hay radio real, señal celular, RSSI, Wi-Fi, sincronización ni multitrayecto.
+- La deriva común es una construcción sintética; no cubre todos los fallos comunes.
+- El paquete del otro tren se supone inicialmente acotado a +/-10 m. Su límite se
+  amplía hacia atrás a 5 m/s por segundo de antigüedad; es un supuesto del escenario.
+- No hay autenticación, drivers reales, fuentes de alimentación, latencias variables
+  o interfaz con frenos. No se deben usar estos avisos para conducir un tren.
+- Activar freno ante un aviso diagnóstico es una política de experimento, no una
+  instrucción operativa ni una arquitectura de protección ferroviaria validada.
+- No se simulan LZB, ETCS, autorizaciones de movimiento ni un accidente concreto.
+  No se calcula probabilidad de accidente, SIL, ahorro económico o fiabilidad real.
+- No se ha asignado una licencia de distribución al código.
+
+PRUEBAS
+
+Se ejecutan automáticamente: distancia analítica frente a dinámica integrada;
+independencia del paso temporal; límite de desaceleración constante; ausencia de
+marcha atrás; medidas idénticas en replay; reemplazo transparente exacto del
+adaptador; eliminación aislada de distancias; ambigüedad, mapa desplazado y alias;
+separación de avisos de peligro y diagnóstico; rechazo de errores abruptos;
+respuesta ante mensajes antiguos y sensores perdidos; covarianzas y finitud.
+No se exige que la fusión gane siempre ni que todos los escenarios terminen bien.
+
+docs/PROPUESTA_MODULAR.txt describe qué está implementado y cómo seguir evaluándolo.
+docs/VALIDATION.md documenta la ejecución que acompaña a este repositorio.
+
+FUENTES DE CONTEXTO, NO CERTIFICACIÓN
+https://transport.ec.europa.eu/transport-modes/rail/ertms/faq-ertms_en
+https://www.era.europa.eu/domains/safety-management/common-safety-methods_en
+https://elib.dlr.de/119046/2/1570436756.pdf

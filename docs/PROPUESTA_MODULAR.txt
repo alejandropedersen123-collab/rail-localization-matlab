@@ -1,0 +1,146 @@
+PROPUESTA MODULAR — VERSIÓN 2
+29 de octubre de 2026
+
+PROPÓSITO
+
+Estudiar una capa de observación que permita detectar datos de localización
+incoherentes o insuficientes y evaluar sus consecuencias mediante simulación.
+La primera aplicación propuesta es laboratorio, reproducción de datos y revisión
+por profesionales. La propuesta no atribuye causas a ningún accidente.
+
+Localizar un tren no cubre toda la protección ferroviaria. ERTMS/ETCS incluye,
+entre otras funciones, supervisión de velocidad/distancia y autorizaciones de
+movimiento [1]. Cualquier integración operativa exigiría otro alcance y la
+evaluación de riesgos y autorizaciones que correspondan con especialistas [2].
+
+QUÉ HA CAMBIADO EN EL PROTOTIPO
+
+El código está separado en módulos MATLAB del paquete +rail. Los sensores y
+los controles son ahora dos factores distintos: GPS, GPS con controles, fusión
+y fusión con controles. Hay reproducción idéntica de observaciones y una segunda
+simulación en la que el aviso cambia la trayectoria mediante frenado dinámico.
+
+Se han añadido trayectos sin obstáculo, avisos de ocupación falsos, deriva de
+posición común, deslizamiento de rueda, dos hipótesis laterales de vía y mapas
+incorrectos. Las métricas distinguen falsas alarmas de peligro, diagnóstico y
+paradas sin obstáculo. La cobertura de 3 sigma se contrasta con el error real
+de simulación para mostrar cuándo el filtro tiene demasiada confianza.
+
+La prueba de sustitución retira las referencias terrestres sin cambiar el
+estimador, supervisor o física. Repite los 17 escenarios con la semilla 1001,
+comprueba salidas GPS idénticas y exporta diferencias para la fusión.
+
+MÓDULOS Y EVOLUCIÓN
+
+A. Adaptadores de sensores: sensor_sample.m y sensor_without_ranges.m.
+   Actual: GNSS, IMU, velocidad de rueda y distancias sintéticas.
+   Cambio: sustituir el adaptador a través de options.sensorFn.
+   Pendiente: drivers, calibración, latencias, sincronización y datos reales.
+   Una medida independiente de velocidad mediante radar podría estudiarse;
+   no se ha implementado ni elegido hardware.
+
+B. Referencias terrestres: parámetros de anclas y medidas en el adaptador.
+   Actual: tres coordenadas conocidas, ruido independiente y un error compartido
+   de posición en el escenario de deriva común.
+   Cambio: comparar su ausencia, geometría, número, cobertura y tipo de medida.
+   Pendiente: modelo físico de radio, multitrayecto, sincronización y levantamiento.
+   Una conexión de red por sí sola no es una distancia utilizable.
+
+C. Estimación: estimator_step.m.
+   Actual: filtro longitudinal 1D, fusión opcional y rechazo NIS opcional.
+   Cambio: probar otro estimador preservando estados de salida y pruebas.
+   Pendiente: errores correlados más amplios, calibración de incertidumbre,
+   estrategias de recuperación y evaluación de cada control por separado.
+   El factor «controles» actual es un grupo de funciones, no una prueba de cuál
+   de esas funciones aporta cada mejora individual.
+
+D. Mapa e identidad: track_step.m.
+   Actual: dos vías rectas, observación lateral, verificación de coherencia y
+   umbral de confianza. No se fuerza ya una bandera de ambigüedad por escenario.
+   Cambio: introducir mapa versionado, curvas, desvíos y seguimiento de hipótesis.
+   Pendiente: identificación real de vía, trayectoria 2D y topología de red.
+   La prueba de alias muestra una identidad equivocada que puede parecer segura;
+   ese caso no está resuelto. La identidad no descarta obstáculos en este modelo.
+
+E. Diagnóstico y supervisión: supervisor_step.m y rechazo del estimador.
+   Actual: antigüedad, disponibilidad, vía desconocida y margen formal de parada.
+   Cambio: mejorar independencia y cobertura de fallos y medir falsas alarmas.
+   Pendiente: reglas derivadas de un análisis de riesgos, límites de protección,
+   interacción humana y política de actuación admisible para una aplicación real.
+   Que no exista aviso no significa autorización para circular.
+
+F. Física: plant_step.m y stopping_distance.m.
+   Actual: reacción, crecimiento lineal del frenado, limitación por adherencia,
+   pendiente y parada con velocidad no negativa, con realimentación de sensores.
+   Cambio: sustituir la planta y volver a comprobar estimador y supervisor.
+   Pendiente: composición real, propagación del frenado, dinámica de contacto y
+   datos medidos. Las pruebas analíticas solo validan este modelo simplificado.
+
+G. Evaluación y reproducción: noise, evaluate, summarize, factor_effects y selftest.
+   Actual: medidas idénticas en replay, ruido conservado en lazo cerrado, trazas,
+   pruebas de física y sustitución y resultados completos, incluidos los fallos.
+   Cambio: ampliar escenarios y añadir grabaciones independientes.
+   Pendiente: incertidumbre estadística, representatividad y revisión externa.
+
+CÓMO SUSTITUIR UNA PIEZA
+
+1. Guardar versión, parámetros y resultados de referencia.
+2. Mantener la interfaz y revisar unidades, tiempos, calibración y calidad.
+3. Reproducir las mismas entradas y fallos, sin cambiar otros módulos.
+4. Comparar error, incertidumbre, respuesta, cruces de obstáculo y falsas alarmas.
+5. Documentar mejoras y regresiones. La compatibilidad de formato no valida
+   el modelo de error del nuevo sensor ni garantiza equivalencia de seguridad.
+
+La interfaz de sensores implementada contiene t, accel, odo, gnss, ranges,
+lateral, leaderRear, packetTime y hasPeer. Las unidades son m, s, m/s y m/s2;
+los valores NaN representan observaciones ausentes. Las anclas están en el
+marco cartesiano local del escenario y la posición longitudinal parte de cero.
+El módulo de sensores no recibe el filtro; solo el generador sintético conoce
+la verdad de referencia. La evaluación sí la utiliza para medir los resultados.
+
+Para equipos reales habría que ampliar el contrato con identificación del
+sensor, secuencia, instante de medida y recepción separados, referencia temporal,
+versión de esquema, marco de coordenadas, incertidumbre, calidad y calibración.
+La autenticación, procedencia y protección de esa información están pendientes.
+
+ETAPAS PROPUESTAS
+
+0. Revisión del riesgo concreto y condiciones de uso con profesionales ferroviarios.
+1. Revisión del código y ampliación de hipótesis: curvas, desvíos, fallos comunes,
+   latencias, mapas versionados y evaluación de controles individuales.
+2. Banco de laboratorio con sensores reales y referencia independiente de posición.
+3. Si la evidencia lo justifica, evaluación autorizada en modo de observación,
+   con operador/gestor y sin influir en la conducción ni sustituir información operativa.
+4. Decisión sobre un desarrollo ferroviario específico, sus requisitos, evaluación
+   independiente y proceso aplicable. No se promete certificación.
+
+CRITERIOS PARA INVESTIGAR COSTES
+
+Comparar alternativas que satisfagan los mismos requisitos definidos. Medir
+el ciclo de vida completo: desarrollo, sensores, anclas, instalación, alimentación,
+comunicaciones, calibración, mantenimiento, repuestos, validación y formación.
+
+Hipótesis de ahorro: reutilizar interfaces, reproducir pruebas automáticamente,
+facilitar sustituciones y estudiar dónde hacen falta referencias adicionales.
+Existen antecedentes de GNSS, IMU y mapas en sistemas modulares de monitorización
+ferroviaria [3]. No se reivindica originalidad de la fusión de sensores.
+
+No hay presupuestos, ahorro demostrado ni requisitos de seguridad satisfechos.
+MATLAB requiere licencia; un port a una plataforma libre permitiría investigar
+distribución sin esa dependencia, pero habría que verificar su equivalencia.
+
+COMUNICACIÓN PÚBLICA
+
+Presentar el problema delimitado, diseño de pruebas, resultados y limitaciones.
+Pedir revisión concreta: supuestos de frenado, dependencia entre sensores,
+identidad de vía y pruebas ausentes. No usar la simulación para afirmar cómo
+se habría evitado un accidente ni que un componente es apto para servicio.
+El README del repositorio refleja este alcance. No se ha asignado una licencia
+de distribución al código.
+
+FUENTES DE CONTEXTO
+[1] https://transport.ec.europa.eu/transport-modes/rail/ertms/faq-ertms_en
+[2] https://www.era.europa.eu/domains/safety-management/common-safety-methods_en
+[3] https://elib.dlr.de/119046/2/1570436756.pdf
+Las etapas y arquitectura son una propuesta de este proyecto, no recomendaciones
+validadas o certificadas por estas fuentes.

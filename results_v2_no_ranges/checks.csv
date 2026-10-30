@@ -1,0 +1,7 @@
+PassedCheck
+"Stopping physics / weak brakes / slope / adhesion / timestep"
+"Identical replay observations in all four configurations"
+"Sensor substitution: identity exact; no-range adapter isolates channels"
+"Track hypotheses: ambiguity, inconsistent map and confident alias"
+"Clear track: hazard alarms versus diagnostic-induced stops"
+"GNSS/range rejection, stale-message and sensor-loss response"

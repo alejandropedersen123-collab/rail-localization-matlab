@@ -1,0 +1,57 @@
+RESULTADOS MEDIDOS — PROTOTIPO V2
+
+MATLAB: 26.1.0.3346908 (R2026a) Update 5
+17 escenarios; 1 semillas por escenario; cuatro configuraciones.
+17 combinaciones escenario/semilla; 68 ensayos de arquitectura; 136 simulaciones contando replay y lazo cerrado.
+
+SALTO GNSS DE -400 m: RMSE EN REPLAY
+GPS: 247.035 m
+GPS + controls: 5.287 m
+Fusion: 172.566 m
+Fusion + controls: 0.663 m
+Los controles también mejoran GPS sin añadir sensores; comparar ambos factores por separado.
+
+DERIVA COMPARTIDA
+Fusión con controles: RMSE 13.840 m; cobertura empírica de +/-3 sigma: 33.58%.
+La incertidumbre formal subestima el error: añadir sensores no elimina fallos comunes.
+
+MAPA EQUIVOCADO PERO COHERENTE
+Identidad incorrecta considerada conocida en 100.00% de muestras.
+El módulo lateral simplificado no resuelve este caso.
+
+TRAYECTOS SIN OBSTÁCULO
+Clear track:
+  GPS: 0 avisos de peligro; 0 ensayos con orden de freno, de 1.
+  GPS + controls: 0 avisos de peligro; 0 ensayos con orden de freno, de 1.
+  Fusion: 0 avisos de peligro; 0 ensayos con orden de freno, de 1.
+  Fusion + controls: 0 avisos de peligro; 0 ensayos con orden de freno, de 1.
+Clear track GNSS loss:
+  GPS: 0 avisos de peligro; 0 ensayos con orden de freno, de 1.
+  GPS + controls: 0 avisos de peligro; 1 ensayos con orden de freno, de 1.
+  Fusion: 0 avisos de peligro; 0 ensayos con orden de freno, de 1.
+  Fusion + controls: 0 avisos de peligro; 0 ensayos con orden de freno, de 1.
+Clear track ambiguity:
+  GPS: 0 avisos de peligro; 0 ensayos con orden de freno, de 1.
+  GPS + controls: 0 avisos de peligro; 1 ensayos con orden de freno, de 1.
+  Fusion: 0 avisos de peligro; 0 ensayos con orden de freno, de 1.
+  Fusion + controls: 0 avisos de peligro; 1 ensayos con orden de freno, de 1.
+Clear track phantom peer:
+  GPS: 1 avisos de peligro; 1 ensayos con orden de freno, de 1.
+  GPS + controls: 1 avisos de peligro; 1 ensayos con orden de freno, de 1.
+  Fusion: 1 avisos de peligro; 1 ensayos con orden de freno, de 1.
+  Fusion + controls: 1 avisos de peligro; 1 ensayos con orden de freno, de 1.
+Los avisos diagnósticos se contabilizan aparte; en el modelo también activan freno.
+
+FRENADO INSUFICIENTE: CRUCES GEOMÉTRICOS DEL OBSTÁCULO
+Weak brakes / GPS: 1 de 1.
+Weak brakes / GPS + controls: 1 de 1.
+Weak brakes / Fusion: 1 de 1.
+Weak brakes / Fusion + controls: 1 de 1.
+Downhill low adhesion / GPS: 1 de 1.
+Downhill low adhesion / GPS + controls: 1 de 1.
+Downhill low adhesion / Fusion: 1 de 1.
+Downhill low adhesion / Fusion + controls: 1 de 1.
+En el caso de freno débil ni frenar desde el inicio basta bajo estos supuestos.
+
+Ver checks.csv para pruebas de física, comparación y sustitución.
+Los resultados son sintéticos: no representan LZB/ETCS, probabilidad de accidente, fiabilidad real ni ahorro demostrado.
