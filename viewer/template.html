@@ -16,6 +16,7 @@
   --muted: #9C9C9C; --border: #E8E8EC; --alt: #F4F4F5;
   --selected: #F0F0FF; --link: #4F46E5; --on-primary: #FAFAFA;
   --warning-bg: #FFF7E6; --warning-text: #8C5104; --warning: #F59E0B;
+  --positive-bg: #ECFDF5; --positive-text: #166534; --negative-bg: #FEF2F2; --negative-text: #B91C1C;
   --track: #8B8B97; --single: #A46E17; --node: #5D5D68;
   --nav: rgba(255,255,255,.92); --focus: rgba(99,102,241,.16);
   font-family: 'DM Sans', 'Segoe UI', sans-serif;
@@ -26,6 +27,7 @@
   --text: #F4F4F5; --secondary: #B3B3BF; --muted: #9797A3;
   --border: #35353E; --alt: #24242C; --selected: #30304D;
   --link: #B2B3FF; --warning-bg: #382D19; --warning-text: #F2C77B;
+  --positive-bg: #142E24; --positive-text: #86EFAC; --negative-bg: #3D2025; --negative-text: #FCA5A5;
   --track: #898997; --single: #D6AD69; --node: #C2C2CC;
   --nav: rgba(26,26,31,.94); --focus: rgba(129,132,255,.3);
 }
@@ -193,7 +195,29 @@ h1 { font-size: clamp(36px,4.5vw,60px); }
 .research { margin-top: 24px; }
 .evidence-controls { display: grid; grid-template-columns: minmax(240px,1fr) 1.4fr; gap: 24px; align-items: center; padding: 24px; }
 .evidence-controls p { margin: 0; }
-.evidence-table { min-width: 640px; }
+.evidence-table { min-width: 760px; }
+.evidence-table td:first-child { width: 42%; min-width: 280px; }
+.evidence-table td { vertical-align: top; padding-top: 20px; padding-bottom: 20px; }
+.evidence-table th small { display: block; font-size: 11px; margin-top: 4px; }
+.configuration-reading { display: flex; align-items: center; flex-wrap: wrap; gap: 8px 12px; }
+.row-reading { margin: 8px 0 0; max-width: 480px; color: var(--secondary); font-size: 13px; line-height: 1.55; }
+.verdict-badge { display: inline-flex; align-items: center; gap: 8px; padding: 6px 10px; border-radius: 6px; font-size: 12px; font-weight: 700; line-height: 1.4; }
+.positive { --verdict-bg: var(--positive-bg); --verdict-text: var(--positive-text); }
+.caution { --verdict-bg: var(--warning-bg); --verdict-text: var(--warning-text); }
+.negative { --verdict-bg: var(--negative-bg); --verdict-text: var(--negative-text); }
+.verdict-badge { background: var(--verdict-bg); color: var(--verdict-text); }
+.verdict-icon { display: inline-flex; justify-content: center; align-items: center; min-width: 18px; height: 18px; font-size: 16px; }
+.experiment-reading { margin: 0 24px 24px; padding: 20px; border: 1px solid var(--border); border-left: 4px solid var(--verdict-text); border-radius: 8px; background: var(--surface); }
+.reading-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+.reading-counts { color: var(--secondary); font-size: 12px; }
+.reading-summary { margin: 16px 0 12px; font-size: 16px; line-height: 1.65; }
+.reading-next { margin: 0; color: var(--secondary); font-size: 13px; line-height: 1.6; }
+.verdict-legend { display: flex; align-items: center; gap: 8px 16px; flex-wrap: wrap; padding: 0 24px 20px; }
+.reading-criteria { border-top: 1px solid var(--border); }
+.reading-criteria summary { padding: 16px 24px; font-size: 13px; }
+.reading-criteria p { margin: 0; padding: 0 24px 20px; color: var(--secondary); font-size: 13px; line-height: 1.65; }
+@media (max-width: 620px) { .experiment-reading { margin: 0 16px 20px; padding: 16px; } .reading-summary { font-size: 15px; } .verdict-legend { padding: 0 16px 20px; } }
+
 .barcell { min-width: 180px; }
 .metric-bar { height: 4px; border-radius: 4px; background: var(--border); margin-top: 8px; max-width: 180px; }
 .metric-bar span { display: block; height: 4px; background: var(--secondary); border-radius: 4px; }
@@ -307,12 +331,14 @@ button:disabled { opacity: .5; cursor: not-allowed; transform: none; }
         <article class="card padded"><span class="overline">Hipótesis de valor</span><h3 style="margin-top:12px">Menor coste total. Mayor robustez ante fallos.</h3><p class="body-copy">Se busca reducir duplicidades, detectar incoherencias y conservar información útil al perder sensores o cobertura. El ahorro y la fiabilidad operativa se deberán medir frente a una alternativa concreta, con el mismo alcance de servicio.</p></article>
       </div>
     </div>
-    <article class="card research">
+    <article class="card research" id="experiments">
       <div class="cardhead"><h2>Qué dicen los experimentos</h2><span class="chip" id="evidenceSize"></span></div>
-      <div class="evidence-controls"><div class="field"><label for="sensorScenario">Fallo o condición de ensayo</label><select id="sensorScenario"></select></div><p class="body-copy">Cuatro configuraciones sobre las mismas observaciones sintéticas. El error se mide en <em>replay</em>; las órdenes de freno, en lazo cerrado. GNSS básico es una referencia experimental, no el sistema ferroviario actual.</p></div>
-      <div class="table-wrap"><table class="evidence-table"><thead><tr><th>Configuración</th><th>Error RMSE ↓</th><th>Cobertura ±3σ</th><th id="brakeHeading">Cruces del obstáculo</th></tr></thead><tbody id="evidenceRows"></tbody></table></div>
-      <p class="findings" id="finding"></p>
-      <div class="note">RMSE = error cuadrático medio de posición. La cobertura indica la fracción de muestras cuyo error cae dentro de ±3σ del filtro; no es una probabilidad de seguridad. Se muestran todos los casos, incluidos los fallos que siguen sin resolverse.</div>
+      <div class="evidence-controls"><div class="field"><label for="sensorScenario">Fallo o condición de ensayo</label><select id="sensorScenario"></select></div><p class="body-copy">Elige una situación y lee su conclusión. Debajo puedes comparar cuatro formas de calcular la posición: GPS solo, GPS con comprobaciones, varios sensores combinados y varios sensores con comprobaciones.</p></div>
+      <div id="experimentReading" class="experiment-reading" role="status" aria-live="polite" aria-atomic="true"></div>
+      <div class="verdict-legend" aria-label="Cómo leer los resultados"><span class="verdict-badge positive"><span aria-hidden="true">✓</span> Favorable</span><span class="verdict-badge caution"><span aria-hidden="true">!</span> Con reservas</span><span class="verdict-badge negative"><span aria-hidden="true">✕</span> Desfavorable</span></div>
+      <div class="table-wrap"><table class="evidence-table"><thead><tr><th>Configuración y lectura rápida</th><th>Error de posición ↓<small>RMSE · menor es mejor</small></th><th>Margen de incertidumbre<small>Muestras dentro de ±3σ</small></th><th id="brakeHeading">Rebases del obstáculo</th></tr></thead><tbody id="evidenceRows"></tbody></table></div>
+      <div class="note">El error RMSE resume cuánto se desvía la posición calculada; no es el error máximo. La cobertura indica cuántas muestras quedan dentro del margen de incertidumbre calculado: no es un porcentaje de seguridad. La posición se evalúa sin actuar sobre el tren y el frenado en otra simulación con actuación.</div>
+      <details class="reading-criteria"><summary>Cómo se decide el color y qué significa</summary><p>Rojo: hay rebases del obstáculo, avisos tardíos o ausentes, falsas alarmas de obstáculo, una vía equivocada aceptada como correcta o una vía desconocida sin aviso por incertidumbre. Ámbar: persiste una limitación, se ordena frenar por precaución sin obstáculo, falta confirmar la parada o faltan datos. También se avisa si menos del 95 % de las muestras cae dentro del margen ±3σ; es un criterio visual de este laboratorio, no un umbral ferroviario. Verde: se alcanza el resultado buscado y no aparecen esas señales en esta muestra. Un fallo tiene prioridad sobre un error de posición pequeño. Son solo tres ensayos sintéticos por configuración: el verde no acredita seguridad ni fiabilidad en servicio. GNSS básico no representa el sistema ferroviario actual.</p></details>
       <div class="padded actions"><button id="exportEvidence">Descargar resultados CSV ↓</button><a class="inline-link" href="https://github.com/alejandropedersen123-collab/rail-localization-matlab/blob/main/docs/RESEARCH_CASE.md" target="_blank" rel="noopener">Propuesta, evidencias y plan de validación ↗</a></div>
     </article>
     <p class="body-copy section-block">Alcance: el ensayo de sensores, la red de ocho trenes y el demostrador de detección local son experimentos separados. La fusión todavía no alimenta al regulador de la red, que utiliza posición y ocupación ideales. Madrid–Andalucía reproduce resultados de MATLAB; las otras redes se calculan en el navegador. El ensayo de ocupación y los presupuestos son demostradores separados.</p>

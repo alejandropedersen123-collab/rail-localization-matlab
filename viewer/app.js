@@ -258,34 +258,29 @@ const sensorRows = data.sensorEvidence || [];
 const sensorIds = [...new Set(sensorRows.map(r => r.ScenarioID))];
 el('sensorScenario').innerHTML = sensorIds.map(id => '<option value="'+id+'">'+sensorLabels[id-1]+'</option>').join('');
 el('sensorScenario').value = sensorIds.includes(3) ? '3' : String(sensorIds[0]);
+const verdictSymbols={positive:'✓',caution:'!',negative:'✕'};
+function verdictBadge(result) {
+  return '<span class="verdict-badge '+result.status+'"><span class="verdict-icon" aria-hidden="true">'+verdictSymbols[result.status]+'</span>'+escapeHTML(result.label)+'</span>';
+}
 function renderEvidence() {
-  const id = +el('sensorScenario').value, rows = sensorRows.filter(r => r.ScenarioID === id);
-  if (!rows.length) { el('finding').textContent = 'No se ha incorporado una ejecución del laboratorio de sensores.'; return; }
-  const max = Math.max(...rows.map(r => r.OpenRMSE_m)), obstacle = !!rows[0].HasObstacle;
-  el('evidenceSize').textContent = rows[0].Runs+' semillas por configuración';
-  el('brakeHeading').textContent = obstacle ? 'Cruces del obstáculo' : 'Ensayos con orden de freno';
-  el('evidenceRows').innerHTML = rows.map(r => '<tr><td class="'+(r.Architecture === 'Fusion + controls' ? 'emphasis' : '')+'">'+architectures[r.Architecture]+'</td><td class="barcell"><span class="num">'+r.OpenRMSE_m.toFixed(3)+' m</span><div class="metric-bar" aria-hidden="true"><span style="width:'+(max ? r.OpenRMSE_m/max*100 : 0)+'%"></span></div></td><td class="num">'+(r.Formal3SigmaCoverage*100).toFixed(1)+' %</td><td class="num">'+(obstacle ? r.ClosedCollisionTrials : r.NoObstacleBrakeTrials)+' / '+r.Runs+'</td></tr>').join('');
-  const a = rows.find(r => r.Architecture === 'GPS'), b = rows.find(r => r.Architecture === 'GPS + controls'), f = rows.find(r => r.Architecture === 'Fusion + controls');
-  const findings = {
-    1:'La fusión reduce el error de posición en el ensayo nominal. Una mejor precisión no basta para demostrar integridad ni fiabilidad operativa.',
-    2:'La fusión conserva una estimación más precisa durante esta pérdida de GNSS. El resultado depende de los otros sensores sintéticos y de sus hipótesis de fallo.',
-    3:'Ante el salto artificial de GNSS, el RMSE pasa de '+a.OpenRMSE_m.toFixed(2)+' m a '+f.OpenRMSE_m.toFixed(2)+' m con fusión y controles. Los controles por sí solos también mejoran GNSS: '+b.OpenRMSE_m.toFixed(2)+' m. Comparar ambos factores evita atribuir toda la mejora a añadir sensores.',
-    4:'El rechazo de observaciones incoherentes se ensaya frente a una distancia aberrante. Las distancias proceden de anclas sintéticas; no de una instalación de radio real.',
-    5:'La antigüedad del mensaje activa una respuesta conservadora en las configuraciones con controles. Datos antiguos y una vía libre confirmada no son equivalentes.',
-    6:'Este caso degrada los sensores de movimiento. La combinación de sensores debe evaluarse también cuando pierde sus fuentes auxiliares.',
-    7:'La posición longitudinal no resuelve por sí sola qué vía ocupa el tren. El módulo lateral considera solo dos vías rectas y puede declarar ambigüedad.',
-    8:'Las cuatro configuraciones cruzan geométricamente el obstáculo con estos frenos insuficientes. Mejor localización no corrige una capacidad física de frenado insuficiente.',
-    9:'El trayecto libre sirve de control para revisar órdenes de freno innecesarias. Tres ensayos sin intervención no estiman una tasa de falsas alarmas en servicio.',
-    10:'Con GNSS y controles se ordena frenar en los '+b.NoObstacleBrakeTrials+' ensayos; con fusión y controles, en '+f.NoObstacleBrakeTrials+'. Sugiere continuidad ante este fallo concreto, pendiente de medir en operación real.',
-    11:'Fallo común: con fusión y controles, la cobertura de ±3σ cae a '+(f.Formal3SigmaCoverage*100).toFixed(1)+' %. El estimador puede parecer confiado mientras se equivoca. La diversidad de sensores no elimina todos los fallos compartidos.',
-    12:'Un desplazamiento del mapa puede forzar un diagnóstico de vía desconocida y una parada conservadora. Es necesario comprobar el mapa además de los sensores.',
-    13:'El mapa equivocado produce una identidad de vía incorrecta con aparente confianza en el '+(f.WrongConfidentTrackFraction*100).toFixed(0)+' % de las muestras. Es una limitación sin resolver, aunque el error longitudinal parezca pequeño.',
-    14:'La pendiente y la baja adherencia hacen insuficiente el frenado de este ensayo: todas las configuraciones cruzan el obstáculo. Este laboratorio no representa una curva ETCS validada.',
-    15:'Una incertidumbre de vía puede producir una parada conservadora aun sin obstáculo. Debe medirse ese coste de disponibilidad junto con la detección de peligros.',
-    16:'El deslizamiento de rueda altera la odometría. Este ensayo comprueba la respuesta al fallo de una fuente distinta de GNSS.',
-    17:'Un mensaje reciente con ocupación falsa provoca órdenes de freno en todas las configuraciones. Reciente no significa verdadero: hace falta contrastar origen y coherencia.'
-  };
-  el('finding').textContent = findings[id] || '';
+  const id=+el('sensorScenario').value, rows=sensorRows.filter(r=>r.ScenarioID===id);
+  if(!rows.length) {
+    el('experimentReading').innerHTML='<p>No hay datos suficientes para valorar este ensayo.</p>';
+    el('evidenceRows').innerHTML='';return;
+  }
+  const reading=metrics.experimentReading(rows),max=Math.max(...rows.map(r=>r.OpenRMSE_m)),obstacle=!!rows[0].HasObstacle;
+  el('evidenceSize').textContent=rows[0].Runs+' ensayos por configuración';
+  el('experimentReading').className='experiment-reading '+reading.status;
+  el('experimentReading').innerHTML='<div class="reading-head">'+verdictBadge(reading)+'<span class="reading-counts">'+reading.counts.positive+' '+(reading.counts.positive===1?'favorable':'favorables')+' · '+reading.counts.caution+' con reservas · '+reading.counts.negative+' '+(reading.counts.negative===1?'desfavorable':'desfavorables')+'</span></div>'
+    +'<p class="reading-summary">'+escapeHTML(reading.summary)+'</p><p class="reading-next"><strong>Qué falta mejorar o comprobar:</strong> '+escapeHTML(reading.next)+'</p>';
+  el('brakeHeading').innerHTML=(obstacle?'Rebases del obstáculo':'Frenadas sin obstáculo')+'<small>'+(obstacle?'0 es el resultado buscado':'Lee el motivo de cada valoración')+'</small>';
+  el('evidenceRows').innerHTML=rows.map(r=>{
+    const verdict=metrics.assessEvidence(r);
+    return '<tr><td><div class="configuration-reading"><strong>'+escapeHTML(architectures[r.Architecture])+'</strong>'+verdictBadge(verdict)+'</div><p class="row-reading">'+escapeHTML(verdict.reason)+'</p></td>'
+      +'<td class="barcell"><span class="num">'+r.OpenRMSE_m.toLocaleString('es-ES',{minimumFractionDigits:3,maximumFractionDigits:3})+' m</span><div class="metric-bar" aria-hidden="true"><span style="width:'+(max?r.OpenRMSE_m/max*100:0)+'%"></span></div></td>'
+      +'<td class="num">'+(r.Formal3SigmaCoverage*100).toLocaleString('es-ES',{minimumFractionDigits:1,maximumFractionDigits:1})+' %</td>'
+      +'<td class="num">'+(obstacle?r.ClosedCollisionTrials:r.NoObstacleBrakeTrials)+' / '+r.Runs+'</td></tr>';
+  }).join('');
 }
 el('sensorScenario').addEventListener('change', renderEvidence);
 el('exportEvidence').disabled = !sensorRows.length;
@@ -390,6 +385,7 @@ loadNetworkView(); renderEvidence(); renderDetector(); renderBudget(); renderGps
 setTheme('light'); pickScenario();
 async function restoreView() {
   const params = new URLSearchParams(location.search);
+  if(sensorIds.includes(+params.get('sensor'))) {el('sensorScenario').value=params.get('sensor');renderEvidence();}
   const project=exampleProjects.find(p=>p.id===params.get('network'));
   if(['normal','unknown','outage'].includes(params.get('gps'))) el('gpsExample').value=params.get('gps');
   if(project || params.has('gps')) {

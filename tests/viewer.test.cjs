@@ -72,6 +72,50 @@ test('Generated evidence preserves every CSV scenario and numerical result', () 
     else assert.ok(Math.abs(actual-expected)<1e-9,keys[j]);
   }));
 });
+
+test('Every published experiment has an explanation and the expected outcomes for all four configurations',()=>{
+  // Order: GNSS, GNSS + controls, fusion, fusion + controls.
+  const expected=['PPPP','PPPP','NPAP','PPAP','NPNP','PPPP','NANA','NNNN','PPPP','PAPP','AAAA','NANA','NNNN','NNNN','NANA','PPNP','NNNN'];
+  const short={positive:'P',caution:'A',negative:'N'};
+  for(let id=1;id<=17;id++) {
+    const rows=data.sensorEvidence.filter(r=>r.ScenarioID===id),reading=m.experimentReading(rows);
+    assert.equal(rows.map(r=>short[m.assessEvidence(r).status]).join(''),expected[id-1],'Scenario '+id);
+    assert.ok(reading.summary.length>50 && reading.next.length>20);
+    assert.ok(!reading.summary.includes('sin dato') && !reading.summary.includes('No hay una explicación'));
+    assert.equal(Object.values(reading.counts).reduce((a,b)=>a+b),4);
+  }
+});
+
+test('Accurate position cannot make failed braking or a wrong track green',()=>{
+  for(const id of [8,13,14]) {
+    const rows=data.sensorEvidence.filter(r=>r.ScenarioID===id);
+    assert.equal(m.experimentReading(rows).status,'negative');
+    const fusion=rows.find(r=>r.Architecture==='Fusion + controls');
+    assert.ok(fusion.OpenRMSE_m<1);
+    assert.equal(m.assessEvidence(fusion).status,'negative');
+  }
+});
+
+test('Precautionary braking differs from false obstacle alarms and unresolved uncertainty',()=>{
+  const row=(id,arch='Fusion + controls')=>data.sensorEvidence.find(r=>r.ScenarioID===id && r.Architecture===arch);
+  assert.equal(m.assessEvidence(row(10,'GPS + controls')).status,'caution');
+  assert.equal(m.assessEvidence(row(17)).status,'negative');
+  assert.equal(m.assessEvidence(row(15)).status,'caution');
+  assert.equal(m.assessEvidence(row(15,'Fusion')).status,'negative');
+  assert.equal(m.assessEvidence(row(11)).status,'caution');
+  assert.equal(m.assessEvidence(row(9)).status,'positive');
+});
+
+test('Missing evidence, incomplete stopping and the stated coverage threshold cannot give an unjustified green',()=>{
+  const row=data.sensorEvidence[0];
+  assert.equal(m.assessEvidence({...row,Formal3SigmaCoverage:m.evidenceCoverageFloor}).status,'positive');
+  assert.equal(m.assessEvidence({...row,Formal3SigmaCoverage:m.evidenceCoverageFloor-.0001}).status,'caution');
+  assert.equal(m.assessEvidence({...row,ClosedStoppedTrials:2}).status,'caution');
+  for(const key of ['Runs','OpenRMSE_m','Formal3SigmaCoverage','ClosedCollisionTrials','WrongConfidentTrackFraction']) {
+    assert.equal(m.assessEvidence({...row,[key]:null}).status,'caution');
+  }
+  assert.equal(m.experimentReading([]).status,'caution');
+});
 test('All network cases retain alignment, completions and source arrival comparisons', () => {
   assert.equal(data.scenarios.length,3);
   for (const s of data.scenarios) {

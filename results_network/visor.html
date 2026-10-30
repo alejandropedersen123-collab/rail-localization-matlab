@@ -16,6 +16,7 @@
   --muted: #9C9C9C; --border: #E8E8EC; --alt: #F4F4F5;
   --selected: #F0F0FF; --link: #4F46E5; --on-primary: #FAFAFA;
   --warning-bg: #FFF7E6; --warning-text: #8C5104; --warning: #F59E0B;
+  --positive-bg: #ECFDF5; --positive-text: #166534; --negative-bg: #FEF2F2; --negative-text: #B91C1C;
   --track: #8B8B97; --single: #A46E17; --node: #5D5D68;
   --nav: rgba(255,255,255,.92); --focus: rgba(99,102,241,.16);
   font-family: 'DM Sans', 'Segoe UI', sans-serif;
@@ -26,6 +27,7 @@
   --text: #F4F4F5; --secondary: #B3B3BF; --muted: #9797A3;
   --border: #35353E; --alt: #24242C; --selected: #30304D;
   --link: #B2B3FF; --warning-bg: #382D19; --warning-text: #F2C77B;
+  --positive-bg: #142E24; --positive-text: #86EFAC; --negative-bg: #3D2025; --negative-text: #FCA5A5;
   --track: #898997; --single: #D6AD69; --node: #C2C2CC;
   --nav: rgba(26,26,31,.94); --focus: rgba(129,132,255,.3);
 }
@@ -193,7 +195,29 @@ h1 { font-size: clamp(36px,4.5vw,60px); }
 .research { margin-top: 24px; }
 .evidence-controls { display: grid; grid-template-columns: minmax(240px,1fr) 1.4fr; gap: 24px; align-items: center; padding: 24px; }
 .evidence-controls p { margin: 0; }
-.evidence-table { min-width: 640px; }
+.evidence-table { min-width: 760px; }
+.evidence-table td:first-child { width: 42%; min-width: 280px; }
+.evidence-table td { vertical-align: top; padding-top: 20px; padding-bottom: 20px; }
+.evidence-table th small { display: block; font-size: 11px; margin-top: 4px; }
+.configuration-reading { display: flex; align-items: center; flex-wrap: wrap; gap: 8px 12px; }
+.row-reading { margin: 8px 0 0; max-width: 480px; color: var(--secondary); font-size: 13px; line-height: 1.55; }
+.verdict-badge { display: inline-flex; align-items: center; gap: 8px; padding: 6px 10px; border-radius: 6px; font-size: 12px; font-weight: 700; line-height: 1.4; }
+.positive { --verdict-bg: var(--positive-bg); --verdict-text: var(--positive-text); }
+.caution { --verdict-bg: var(--warning-bg); --verdict-text: var(--warning-text); }
+.negative { --verdict-bg: var(--negative-bg); --verdict-text: var(--negative-text); }
+.verdict-badge { background: var(--verdict-bg); color: var(--verdict-text); }
+.verdict-icon { display: inline-flex; justify-content: center; align-items: center; min-width: 18px; height: 18px; font-size: 16px; }
+.experiment-reading { margin: 0 24px 24px; padding: 20px; border: 1px solid var(--border); border-left: 4px solid var(--verdict-text); border-radius: 8px; background: var(--surface); }
+.reading-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+.reading-counts { color: var(--secondary); font-size: 12px; }
+.reading-summary { margin: 16px 0 12px; font-size: 16px; line-height: 1.65; }
+.reading-next { margin: 0; color: var(--secondary); font-size: 13px; line-height: 1.6; }
+.verdict-legend { display: flex; align-items: center; gap: 8px 16px; flex-wrap: wrap; padding: 0 24px 20px; }
+.reading-criteria { border-top: 1px solid var(--border); }
+.reading-criteria summary { padding: 16px 24px; font-size: 13px; }
+.reading-criteria p { margin: 0; padding: 0 24px 20px; color: var(--secondary); font-size: 13px; line-height: 1.65; }
+@media (max-width: 620px) { .experiment-reading { margin: 0 16px 20px; padding: 16px; } .reading-summary { font-size: 15px; } .verdict-legend { padding: 0 16px 20px; } }
+
 .barcell { min-width: 180px; }
 .metric-bar { height: 4px; border-radius: 4px; background: var(--border); margin-top: 8px; max-width: 180px; }
 .metric-bar span { display: block; height: 4px; background: var(--secondary); border-radius: 4px; }
@@ -307,12 +331,14 @@ button:disabled { opacity: .5; cursor: not-allowed; transform: none; }
         <article class="card padded"><span class="overline">Hipótesis de valor</span><h3 style="margin-top:12px">Menor coste total. Mayor robustez ante fallos.</h3><p class="body-copy">Se busca reducir duplicidades, detectar incoherencias y conservar información útil al perder sensores o cobertura. El ahorro y la fiabilidad operativa se deberán medir frente a una alternativa concreta, con el mismo alcance de servicio.</p></article>
       </div>
     </div>
-    <article class="card research">
+    <article class="card research" id="experiments">
       <div class="cardhead"><h2>Qué dicen los experimentos</h2><span class="chip" id="evidenceSize"></span></div>
-      <div class="evidence-controls"><div class="field"><label for="sensorScenario">Fallo o condición de ensayo</label><select id="sensorScenario"></select></div><p class="body-copy">Cuatro configuraciones sobre las mismas observaciones sintéticas. El error se mide en <em>replay</em>; las órdenes de freno, en lazo cerrado. GNSS básico es una referencia experimental, no el sistema ferroviario actual.</p></div>
-      <div class="table-wrap"><table class="evidence-table"><thead><tr><th>Configuración</th><th>Error RMSE ↓</th><th>Cobertura ±3σ</th><th id="brakeHeading">Cruces del obstáculo</th></tr></thead><tbody id="evidenceRows"></tbody></table></div>
-      <p class="findings" id="finding"></p>
-      <div class="note">RMSE = error cuadrático medio de posición. La cobertura indica la fracción de muestras cuyo error cae dentro de ±3σ del filtro; no es una probabilidad de seguridad. Se muestran todos los casos, incluidos los fallos que siguen sin resolverse.</div>
+      <div class="evidence-controls"><div class="field"><label for="sensorScenario">Fallo o condición de ensayo</label><select id="sensorScenario"></select></div><p class="body-copy">Elige una situación y lee su conclusión. Debajo puedes comparar cuatro formas de calcular la posición: GPS solo, GPS con comprobaciones, varios sensores combinados y varios sensores con comprobaciones.</p></div>
+      <div id="experimentReading" class="experiment-reading" role="status" aria-live="polite" aria-atomic="true"></div>
+      <div class="verdict-legend" aria-label="Cómo leer los resultados"><span class="verdict-badge positive"><span aria-hidden="true">✓</span> Favorable</span><span class="verdict-badge caution"><span aria-hidden="true">!</span> Con reservas</span><span class="verdict-badge negative"><span aria-hidden="true">✕</span> Desfavorable</span></div>
+      <div class="table-wrap"><table class="evidence-table"><thead><tr><th>Configuración y lectura rápida</th><th>Error de posición ↓<small>RMSE · menor es mejor</small></th><th>Margen de incertidumbre<small>Muestras dentro de ±3σ</small></th><th id="brakeHeading">Rebases del obstáculo</th></tr></thead><tbody id="evidenceRows"></tbody></table></div>
+      <div class="note">El error RMSE resume cuánto se desvía la posición calculada; no es el error máximo. La cobertura indica cuántas muestras quedan dentro del margen de incertidumbre calculado: no es un porcentaje de seguridad. La posición se evalúa sin actuar sobre el tren y el frenado en otra simulación con actuación.</div>
+      <details class="reading-criteria"><summary>Cómo se decide el color y qué significa</summary><p>Rojo: hay rebases del obstáculo, avisos tardíos o ausentes, falsas alarmas de obstáculo, una vía equivocada aceptada como correcta o una vía desconocida sin aviso por incertidumbre. Ámbar: persiste una limitación, se ordena frenar por precaución sin obstáculo, falta confirmar la parada o faltan datos. También se avisa si menos del 95 % de las muestras cae dentro del margen ±3σ; es un criterio visual de este laboratorio, no un umbral ferroviario. Verde: se alcanza el resultado buscado y no aparecen esas señales en esta muestra. Un fallo tiene prioridad sobre un error de posición pequeño. Son solo tres ensayos sintéticos por configuración: el verde no acredita seguridad ni fiabilidad en servicio. GNSS básico no representa el sistema ferroviario actual.</p></details>
       <div class="padded actions"><button id="exportEvidence">Descargar resultados CSV ↓</button><a class="inline-link" href="https://github.com/alejandropedersen123-collab/rail-localization-matlab/blob/main/docs/RESEARCH_CASE.md" target="_blank" rel="noopener">Propuesta, evidencias y plan de validación ↗</a></div>
     </article>
     <p class="body-copy section-block">Alcance: el ensayo de sensores, la red de ocho trenes y el demostrador de detección local son experimentos separados. La fusión todavía no alimenta al regulador de la red, que utiliza posición y ocupación ideales. Madrid–Andalucía reproduce resultados de MATLAB; las otras redes se calculan en el navegador. El ensayo de ocupación y los presupuestos son demostradores separados.</p>
@@ -586,6 +612,64 @@ button:disabled { opacity: .5; cursor: not-allowed; transform: none; }
       return {train: row.Train, arrival: row.Arrival_s, baseline: ref?.Arrival_s ?? null, delta};
     });
   }
+  // Reading aid for these synthetic trials, not a railway acceptance standard.
+  const evidenceCoverageFloor = .95;
+  function assessEvidence(r) {
+    const result=(status,reason)=>({status,label:{positive:'Favorable',caution:'Con reservas',negative:'Desfavorable'}[status],reason});
+    const counts=['ClosedCollisionTrials','ClosedStoppedTrials','LateOrMissingAlertTrials','NoObstacleHazardAlarmTrials','NoObstacleBrakeTrials','DiagnosticAlertTrials'];
+    const fractions=['Formal3SigmaCoverage','WrongConfidentTrackFraction','UnknownTrackFraction'];
+    if(!r || !Number.isInteger(r.Runs) || r.Runs<1 || ![0,1].includes(r.HasObstacle)
+      || counts.some(k=>!Number.isInteger(r[k]) || r[k]<0 || r[k]>r.Runs)
+      || fractions.some(k=>!Number.isFinite(r[k]) || r[k]<0 || r[k]>1)
+      || !Number.isFinite(r.OpenRMSE_m) || r.OpenRMSE_m<0)
+      return result('caution','Faltan datos válidos para interpretar este resultado.');
+    const ratio=n=>n+' de '+r.Runs, percent=v=>(v*100).toLocaleString('es-ES',{maximumFractionDigits:1})+' %';
+    if(r.ClosedCollisionTrials>0) return result('negative','Rebasa el obstáculo en '+ratio(r.ClosedCollisionTrials)+' ensayos: el frenado no lo evita.');
+    if(r.WrongConfidentTrackFraction>0) return result('negative','Cree estar en otra vía en el '+percent(r.WrongConfidentTrackFraction)+' de las muestras, sin reconocer el error.');
+    if(!r.HasObstacle && r.NoObstacleHazardAlarmTrials>0) return result('negative','Da una falsa alarma de obstáculo en '+ratio(r.NoObstacleHazardAlarmTrials)+' ensayos con la vía libre.');
+    if(r.LateOrMissingAlertTrials>0) return result('negative','El aviso llega tarde o no llega en '+ratio(r.LateOrMissingAlertTrials)+' ensayos.');
+    if(r.UnknownTrackFraction>0) {
+      if(r.DiagnosticAlertTrials===0) return result('negative','No identifica la vía y no activa un aviso por esa incertidumbre.');
+      return result('caution','Avisa por incertidumbre, pero sigue sin identificar la vía. La ambigüedad no está resuelta.');
+    }
+    if(r.Formal3SigmaCoverage<evidenceCoverageFloor) return result('caution','Subestima su error: solo el '+percent(r.Formal3SigmaCoverage)+' de las muestras queda dentro del margen que calcula.');
+    if(!r.HasObstacle && r.NoObstacleBrakeTrials>0) return result('caution','Ordena frenar en '+ratio(r.NoObstacleBrakeTrials)+' ensayos sin obstáculo: respuesta prudente que interrumpe la marcha.');
+    if(r.HasObstacle && r.ClosedStoppedTrials<r.Runs) return result('caution','No se confirma una parada en todos los ensayos con obstáculo.');
+    return result('positive',r.HasObstacle
+      ? 'Se detiene antes del obstáculo en los '+r.Runs+' ensayos de esta muestra.'
+      : 'No ordena frenar en ninguno de los '+r.Runs+' ensayos sin obstáculo.');
+  }
+  function experimentReading(rows) {
+    const assessments=rows.map(assessEvidence),counts={positive:0,caution:0,negative:0};
+    assessments.forEach(a=>counts[a.status]++);
+    const status=rows.length && counts.positive===rows.length?'positive':rows.length && counts.negative===rows.length?'negative':'caution';
+    const labels={positive:'Resultado favorable en este ensayo',negative:'Problema observado en todas las configuraciones',caution:'Resultado con reservas'};
+    if(counts.positive && counts.positive<rows.length)labels.caution='El resultado depende de la configuración';
+    const id=rows[0]?.ScenarioID, byName=name=>rows.find(r=>r.Architecture===name);
+    const a=byName('GPS'),f=byName('Fusion + controls');
+    const error=r=>Number.isFinite(r?.OpenRMSE_m)?r.OpenRMSE_m.toLocaleString('es-ES',{minimumFractionDigits:2,maximumFractionDigits:2})+' m':'sin dato';
+    const explanations={
+      1:['En condiciones normales, las cuatro configuraciones consiguen detener el tren antes del obstáculo. La fusión reduce el error de posición: '+error(a)+' con GNSS frente a '+error(f)+' con fusión y controles.','Repetir con más condiciones y datos reales; esta muestra no mide fiabilidad en servicio.'],
+      2:['Al perder el GPS, las otras fuentes de información ayudan a mantener la posición. La fusión con controles registra '+error(f)+' de error frente a '+error(a)+' con GNSS, y las cuatro configuraciones evitan el obstáculo.','Comprobar pérdidas más largas y fallos simultáneos de los sensores restantes.'],
+      3:['El GPS da un salto falso de posición. GNSS sin controles no evita el obstáculo; los controles rechazan la información incoherente. La fusión sin controles también se equivoca mucho, aunque aquí consigue detenerse.','Mantener controles de coherencia: combinar sensores por sí solo no resuelve este fallo.'],
+      4:['Una medida de distancia falsa empeora la fusión sin controles. Al rechazarla, la fusión con controles mantiene un error de '+error(f)+'. GNSS no utiliza esa medida y apenas cambia.','Probar varias medidas falsas a la vez y mediciones reales, además de las distancias sintéticas.'],
+      5:['El mensaje sobre el otro tren ha quedado desactualizado. Sin controles se rebasa el obstáculo; con controles se detecta que la información es demasiado antigua y se frena antes.','Comprobar retrasos, mensajes perdidos y recuperación de las comunicaciones.'],
+      6:['Se dejan de recibir medidas de posición y movimiento. La estimación empeora, especialmente con GNSS. En esta muestra todas las configuraciones se detienen antes del obstáculo; la fusión con controles registra '+error(f)+' de error.','Ensayar pérdidas más largas y medir cuánto crece el error antes de que deje de ser aceptable para la función estudiada.'],
+      7:['El tren puede estar en una de dos vías cercanas. Saber cuánto ha avanzado no basta para identificar cuál: los controles avisan y provocan una parada prudente, pero no resuelven la ambigüedad.','Añadir y validar información independiente que permita distinguir las vías.'],
+      8:['Los frenos de este ensayo son insuficientes: todas las configuraciones rebasan el obstáculo. Localizar mejor al tren no compensa esa falta de capacidad de frenado.','Revisar capacidad de frenado, velocidad y anticipación en el modelo.'],
+      9:['No hay obstáculos y ninguna configuración ordena frenar. Es un resultado favorable para continuar la marcha en estas condiciones, pero aquí no se pone a prueba la capacidad de evitar un obstáculo.','Repetir en más recorridos para medir falsas alarmas, además de probar situaciones con obstáculos.'],
+      10:['La vía está libre cuando desaparece el GPS. GNSS con controles ordena frenar por falta de información; la fusión con controles conserva la marcha usando las otras fuentes.','Medir cuánto dura esa continuidad y qué ocurre si fallan también los sensores auxiliares.'],
+      11:['Varias fuentes se desvían juntas. El tren se detiene antes del obstáculo, pero el cálculo cree conocer su posición mejor de lo que realmente la conoce: su margen de incertidumbre es demasiado pequeño.','Detectar fallos compartidos y contrastar la posición con una referencia independiente.'],
+      12:['El mapa está desplazado. Los controles detectan que la vía no está clara y provocan una parada prudente; las configuraciones sin controles no avisan de esa incertidumbre.','Verificar y corregir el mapa antes de confiar en la identidad de vía.'],
+      13:['El mapa parece coherente, pero sitúa al tren en la vía equivocada. Todas las configuraciones aceptan ese error. Un error pequeño de posición longitudinal no significa que se haya identificado bien la vía.','Contrastar el mapa y la identidad de vía con información independiente. Este fallo sigue sin resolverse.'],
+      14:['La pendiente y la poca adherencia impiden frenar a tiempo: todas las configuraciones rebasan el obstáculo. La fusión con controles tiene solo '+error(f)+' de error de posición, pero eso no evita el fallo de frenado.','Incorporar esas condiciones al cálculo de frenado y revisar velocidad y distancia de anticipación.'],
+      15:['No hay obstáculo, pero tampoco certeza sobre la vía. Los controles provocan una parada prudente; continuar sin esa certeza no se considera un resultado favorable, aunque no haya choque.','Resolver la identidad de vía y medir las interrupciones que provoca la incertidumbre.'],
+      16:['La rueda desliza y falsea la distancia recorrida. La fusión sin controles se deja arrastrar por ese dato y rebasa el obstáculo; con controles consigue frenarlo. GNSS no utiliza esa fuente.','Contrastar la odometría y probar distintos niveles y duraciones de deslizamiento.'],
+      17:['Llega un mensaje reciente que anuncia un obstáculo inexistente. Todas las configuraciones lo creen y ordenan frenar. El problema es la falsa información de ocupación, aunque la posición sea precisa.','Contrastar el origen y la coherencia de la ocupación: que un mensaje sea reciente no demuestra que sea verdadero.']
+    };
+    const [summary,next]=explanations[id]||['No hay una explicación preparada para este caso. Revisa las métricas y su procedencia.','Completar los datos del ensayo antes de extraer conclusiones.'];
+    return {status,label:labels[status],counts,summary,next};
+  }
   function commonTrunkKm(row, edges, route = [1,2,3,4,5]) {
     const edge = edges[row[6] - 1];
     const j = route.findIndex(e => Math.abs(e) === edge?.ID);
@@ -646,7 +730,7 @@ button:disabled { opacity: .5; cursor: not-allowed; transform: none; }
     // No automatic clear after a detector fault, even if the balance returns to zero.
     return s;
   }
-  const api = {compareArrivals, commonTrunkKm, prototypeBudget, lifecycleCost, newSection, sectionStep, sectionStatus};
+  const api = {compareArrivals, assessEvidence, experimentReading, evidenceCoverageFloor, commonTrunkKm, prototypeBudget, lifecycleCost, newSection, sectionStep, sectionStatus};
   if (typeof module !== 'undefined' && module.exports) module.exports = api;
   else root.RailMetrics = api;
 })(typeof globalThis !== 'undefined' ? globalThis : this);
@@ -911,34 +995,29 @@ const sensorRows = data.sensorEvidence || [];
 const sensorIds = [...new Set(sensorRows.map(r => r.ScenarioID))];
 el('sensorScenario').innerHTML = sensorIds.map(id => '<option value="'+id+'">'+sensorLabels[id-1]+'</option>').join('');
 el('sensorScenario').value = sensorIds.includes(3) ? '3' : String(sensorIds[0]);
+const verdictSymbols={positive:'✓',caution:'!',negative:'✕'};
+function verdictBadge(result) {
+  return '<span class="verdict-badge '+result.status+'"><span class="verdict-icon" aria-hidden="true">'+verdictSymbols[result.status]+'</span>'+escapeHTML(result.label)+'</span>';
+}
 function renderEvidence() {
-  const id = +el('sensorScenario').value, rows = sensorRows.filter(r => r.ScenarioID === id);
-  if (!rows.length) { el('finding').textContent = 'No se ha incorporado una ejecución del laboratorio de sensores.'; return; }
-  const max = Math.max(...rows.map(r => r.OpenRMSE_m)), obstacle = !!rows[0].HasObstacle;
-  el('evidenceSize').textContent = rows[0].Runs+' semillas por configuración';
-  el('brakeHeading').textContent = obstacle ? 'Cruces del obstáculo' : 'Ensayos con orden de freno';
-  el('evidenceRows').innerHTML = rows.map(r => '<tr><td class="'+(r.Architecture === 'Fusion + controls' ? 'emphasis' : '')+'">'+architectures[r.Architecture]+'</td><td class="barcell"><span class="num">'+r.OpenRMSE_m.toFixed(3)+' m</span><div class="metric-bar" aria-hidden="true"><span style="width:'+(max ? r.OpenRMSE_m/max*100 : 0)+'%"></span></div></td><td class="num">'+(r.Formal3SigmaCoverage*100).toFixed(1)+' %</td><td class="num">'+(obstacle ? r.ClosedCollisionTrials : r.NoObstacleBrakeTrials)+' / '+r.Runs+'</td></tr>').join('');
-  const a = rows.find(r => r.Architecture === 'GPS'), b = rows.find(r => r.Architecture === 'GPS + controls'), f = rows.find(r => r.Architecture === 'Fusion + controls');
-  const findings = {
-    1:'La fusión reduce el error de posición en el ensayo nominal. Una mejor precisión no basta para demostrar integridad ni fiabilidad operativa.',
-    2:'La fusión conserva una estimación más precisa durante esta pérdida de GNSS. El resultado depende de los otros sensores sintéticos y de sus hipótesis de fallo.',
-    3:'Ante el salto artificial de GNSS, el RMSE pasa de '+a.OpenRMSE_m.toFixed(2)+' m a '+f.OpenRMSE_m.toFixed(2)+' m con fusión y controles. Los controles por sí solos también mejoran GNSS: '+b.OpenRMSE_m.toFixed(2)+' m. Comparar ambos factores evita atribuir toda la mejora a añadir sensores.',
-    4:'El rechazo de observaciones incoherentes se ensaya frente a una distancia aberrante. Las distancias proceden de anclas sintéticas; no de una instalación de radio real.',
-    5:'La antigüedad del mensaje activa una respuesta conservadora en las configuraciones con controles. Datos antiguos y una vía libre confirmada no son equivalentes.',
-    6:'Este caso degrada los sensores de movimiento. La combinación de sensores debe evaluarse también cuando pierde sus fuentes auxiliares.',
-    7:'La posición longitudinal no resuelve por sí sola qué vía ocupa el tren. El módulo lateral considera solo dos vías rectas y puede declarar ambigüedad.',
-    8:'Las cuatro configuraciones cruzan geométricamente el obstáculo con estos frenos insuficientes. Mejor localización no corrige una capacidad física de frenado insuficiente.',
-    9:'El trayecto libre sirve de control para revisar órdenes de freno innecesarias. Tres ensayos sin intervención no estiman una tasa de falsas alarmas en servicio.',
-    10:'Con GNSS y controles se ordena frenar en los '+b.NoObstacleBrakeTrials+' ensayos; con fusión y controles, en '+f.NoObstacleBrakeTrials+'. Sugiere continuidad ante este fallo concreto, pendiente de medir en operación real.',
-    11:'Fallo común: con fusión y controles, la cobertura de ±3σ cae a '+(f.Formal3SigmaCoverage*100).toFixed(1)+' %. El estimador puede parecer confiado mientras se equivoca. La diversidad de sensores no elimina todos los fallos compartidos.',
-    12:'Un desplazamiento del mapa puede forzar un diagnóstico de vía desconocida y una parada conservadora. Es necesario comprobar el mapa además de los sensores.',
-    13:'El mapa equivocado produce una identidad de vía incorrecta con aparente confianza en el '+(f.WrongConfidentTrackFraction*100).toFixed(0)+' % de las muestras. Es una limitación sin resolver, aunque el error longitudinal parezca pequeño.',
-    14:'La pendiente y la baja adherencia hacen insuficiente el frenado de este ensayo: todas las configuraciones cruzan el obstáculo. Este laboratorio no representa una curva ETCS validada.',
-    15:'Una incertidumbre de vía puede producir una parada conservadora aun sin obstáculo. Debe medirse ese coste de disponibilidad junto con la detección de peligros.',
-    16:'El deslizamiento de rueda altera la odometría. Este ensayo comprueba la respuesta al fallo de una fuente distinta de GNSS.',
-    17:'Un mensaje reciente con ocupación falsa provoca órdenes de freno en todas las configuraciones. Reciente no significa verdadero: hace falta contrastar origen y coherencia.'
-  };
-  el('finding').textContent = findings[id] || '';
+  const id=+el('sensorScenario').value, rows=sensorRows.filter(r=>r.ScenarioID===id);
+  if(!rows.length) {
+    el('experimentReading').innerHTML='<p>No hay datos suficientes para valorar este ensayo.</p>';
+    el('evidenceRows').innerHTML='';return;
+  }
+  const reading=metrics.experimentReading(rows),max=Math.max(...rows.map(r=>r.OpenRMSE_m)),obstacle=!!rows[0].HasObstacle;
+  el('evidenceSize').textContent=rows[0].Runs+' ensayos por configuración';
+  el('experimentReading').className='experiment-reading '+reading.status;
+  el('experimentReading').innerHTML='<div class="reading-head">'+verdictBadge(reading)+'<span class="reading-counts">'+reading.counts.positive+' '+(reading.counts.positive===1?'favorable':'favorables')+' · '+reading.counts.caution+' con reservas · '+reading.counts.negative+' '+(reading.counts.negative===1?'desfavorable':'desfavorables')+'</span></div>'
+    +'<p class="reading-summary">'+escapeHTML(reading.summary)+'</p><p class="reading-next"><strong>Qué falta mejorar o comprobar:</strong> '+escapeHTML(reading.next)+'</p>';
+  el('brakeHeading').innerHTML=(obstacle?'Rebases del obstáculo':'Frenadas sin obstáculo')+'<small>'+(obstacle?'0 es el resultado buscado':'Lee el motivo de cada valoración')+'</small>';
+  el('evidenceRows').innerHTML=rows.map(r=>{
+    const verdict=metrics.assessEvidence(r);
+    return '<tr><td><div class="configuration-reading"><strong>'+escapeHTML(architectures[r.Architecture])+'</strong>'+verdictBadge(verdict)+'</div><p class="row-reading">'+escapeHTML(verdict.reason)+'</p></td>'
+      +'<td class="barcell"><span class="num">'+r.OpenRMSE_m.toLocaleString('es-ES',{minimumFractionDigits:3,maximumFractionDigits:3})+' m</span><div class="metric-bar" aria-hidden="true"><span style="width:'+(max?r.OpenRMSE_m/max*100:0)+'%"></span></div></td>'
+      +'<td class="num">'+(r.Formal3SigmaCoverage*100).toLocaleString('es-ES',{minimumFractionDigits:1,maximumFractionDigits:1})+' %</td>'
+      +'<td class="num">'+(obstacle?r.ClosedCollisionTrials:r.NoObstacleBrakeTrials)+' / '+r.Runs+'</td></tr>';
+  }).join('');
 }
 el('sensorScenario').addEventListener('change', renderEvidence);
 el('exportEvidence').disabled = !sensorRows.length;
@@ -1043,6 +1122,7 @@ loadNetworkView(); renderEvidence(); renderDetector(); renderBudget(); renderGps
 setTheme('light'); pickScenario();
 async function restoreView() {
   const params = new URLSearchParams(location.search);
+  if(sensorIds.includes(+params.get('sensor'))) {el('sensorScenario').value=params.get('sensor');renderEvidence();}
   const project=exampleProjects.find(p=>p.id===params.get('network'));
   if(['normal','unknown','outage'].includes(params.get('gps'))) el('gpsExample').value=params.get('gps');
   if(project || params.has('gps')) {

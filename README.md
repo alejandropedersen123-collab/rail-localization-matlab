@@ -16,7 +16,7 @@ Descarga el repositorio y abre **[`results_network/visor.html`](results_network/
 
 El laboratorio tiene cuatro áreas:
 
-- **Visión y evidencias:** compara las cuatro arquitecturas de sensores en los 17 escenarios, incluyendo deriva compartida, mapas erróneos y frenado insuficiente. Descarga las métricas incorporadas.
+- **Visión y evidencias:** compara las cuatro arquitecturas de sensores en los 17 escenarios, incluyendo deriva compartida, mapas erróneos y frenado insuficiente. Cada situación tiene una conclusión en lenguaje sencillo y cada configuración una valoración con símbolo y motivo: verde favorable, ámbar con reservas y rojo desfavorable. Descarga las métricas incorporadas.
 - **Red automática:** elige uno de cuatro mapas y una condición GPS. Reproduce los trenes, salta a los momentos preparados de pérdida de señal o cobertura desconocida y explora su diagrama espacio–tiempo. Los enlaces de ejemplos conservan red, GPS, escenario, tren e instante.
 - **Detección local:** registra entrada, parada y salida de ejes; corta el enlace remoto o introduce un fallo del detector. La ocupación local se conserva sin enlace remoto y una avería conocida retiene el estado indeterminado. Registro exportable en JSON.
 - **Coste y despliegue:** compara tres tamaños de prototipo con bandas de material y trabajo ya calculadas. Las hipótesis y referencias están visibles; no son presupuestos de instalación ferroviaria ni pruebas de ahorro.
