@@ -1,10 +1,12 @@
-# Simulación ferroviaria en MATLAB: ocho trenes entre Madrid y Andalucía
+# Rail Lab: investigar una operación ferroviaria más autónoma
 
-**Ocho trenes independientes, ramales de Málaga, Sevilla y Granada, convergencias, vía única y separación calculada.** Incluye un visor interactivo que funciona sin MATLAB y conserva el laboratorio original de localización y fallos de sensores.
+**Objetivo: explorar una arquitectura de conducción automática que pueda reducir el coste total y mejorar la robustez ante fallos.** La referencia funcional es una operación sin conductor a bordo, con supervisión central, como la del metro de Copenhague. El ahorro, la fiabilidad en servicio y la aptitud para operar trenes reales todavía deben demostrarse.
+
+La web reúne tres experimentos revisables: circulación automática de ocho trenes Madrid–Andalucía en MATLAB, comparación de sensores bajo 17 condiciones y detección local de ocupación con entrada/salida de ejes. Incluye un evaluador económico con hipótesis editables. [Propuesta, evidencias, referencias y plan de validación](docs/RESEARCH_CASE.md).
 
 La topología y las distancias de referencia se apoyan en documentación de Adif. **Las circulaciones, salidas, límites locales y separaciones son del modelo**: no son posiciones reales de los ocho trenes mencionados en las noticias ni un horario oficial. Cada distancia tiene su procedencia y grado de aproximación en [Datos contrastados](docs/REAL_DATA.md).
 
-![Visor de los ocho trenes y sus separaciones calculadas](results_network/preview.png)
+![Rail Lab: visión de autonomía, evidencias y herramientas de análisis](results_network/preview.png)
 
 ## Abrir el visor
 
@@ -12,11 +14,24 @@ La topología y las distancias de referencia se apoyan en documentación de Adif
 
 Descarga el repositorio y abre **[`results_network/visor.html`](results_network/visor.html)** en tu navegador. Los resultados están incorporados y los controles funcionan sin servidor ni conexión. Las tipografías Genesis se cargan desde Fontshare y Google Fonts; sin conexión se usan fuentes locales. En GitHub, descarga el archivo para ejecutarlo: la vista de código no reproduce HTML.
 
-Puedes reproducir o desplazar el tiempo, seleccionar cualquiera de los ocho trenes y ver su velocidad, recorrido, autorización y hueco al tren precedente. Los escenarios son circulación nominal, interrupción de nuevas autorizaciones durante 10 minutos y una parada prolongada de 20 minutos.
+El laboratorio tiene cuatro áreas:
+
+- **Visión y evidencias:** compara las cuatro arquitecturas de sensores en los 17 escenarios, incluyendo deriva compartida, mapas erróneos y frenado insuficiente. Descarga las métricas incorporadas.
+- **Red automática:** reproduce los ocho trenes, compara llegadas con el caso nominal y explora un diagrama espacio–tiempo del tronco compartido. Exporta la comparación o comparte un enlace con escenario, tren e instante.
+- **Detección local:** registra entrada, parada y salida de ejes; corta el enlace remoto o introduce un fallo del detector. La ocupación local se conserva sin enlace remoto y una avería conocida retiene el estado indeterminado. Registro exportable en JSON.
+- **Coste y despliegue:** introduce inversión, mantenimiento y costes evitables; calcula coste total, balance y recuperación simple. No incorpora precios supuestos ni presupone un ahorro.
+
+Son experimentos separados: el estimador de sensores y el demostrador de ejes aún no alimentan al regulador de la red. Los ocho trenes utilizan posición y ocupación ideales. No se implementan funciones completas de ATO/ATP/ATS, puertas, evacuación ni control de instalaciones reales.
 
 La interfaz sigue el diseño **Genesis**: General Sans, DM Sans y JetBrains Mono, superficies claras, controles índigo y temas claro/oscuro. En móvil, el mapa se desplaza horizontalmente para conservar etiquetas legibles. [Criterios de diseño](docs/VIEWER_DESIGN.md).
 
 La publicación usa GitHub Pages sobre la rama `main`, carpeta raíz, con `.nojekyll`. `index.html` abre el visor generado. Pages sirve el HTML y JavaScript; no ejecuta MATLAB en un servidor. Para publicar resultados nuevos, regenera el visor en MATLAB y sube los cambios a `main`.
+
+Los cálculos del visor están en `viewer/analytics.js`, la interacción en `viewer/app.js` y la interfaz Genesis en `viewer/template.html`. MATLAB los incorpora en un único HTML junto a los resultados. Para verificar las funciones web y la correspondencia de las evidencias con sus CSV:
+
+```sh
+node --test tests/viewer.test.cjs
+```
 
 ## Ejecutar la red en MATLAB
 

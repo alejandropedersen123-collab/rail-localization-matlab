@@ -4,7 +4,8 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="theme-color" content="#FAFAFA">
-<title>Rail Lab · Ocho trenes, una red compartida</title>
+<title>Rail Lab · Hacia una operación ferroviaria más autónoma</title>
+<meta name="description" content="Prototipo de investigación ferroviaria: circulación automática de ocho trenes, fusión de sensores, detección local de ocupación y evaluación de costes con hipótesis explícitas.">
 <link rel="stylesheet" href="https://api.fontshare.com/v2/css?f[]=general-sans@700&amp;display=swap">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;700&amp;family=JetBrains+Mono:wght@400&amp;display=swap">
 <style>
@@ -168,9 +169,90 @@ footer p { margin: 0; }
   html { scroll-behavior: auto; } *, *::before, *::after { transition: none !important; }
 }
 </style>
+<style>
+[hidden] { display: none !important; }
+.hero { padding-top: 48px; padding-bottom: 32px; align-items: center; }
+h1 { font-size: clamp(36px,4.5vw,60px); }
+.hero-stats { display: block; max-width: 240px; }
+.hero-stats strong { font-size: 20px; letter-spacing: -.025em; line-height: 1.4; }
+.hero-stats p { color: var(--secondary); font-size: 12px; line-height: 1.7; }
+.workspace-nav { display: flex; gap: 8px; border-bottom: 1px solid var(--border); margin-bottom: 32px; padding-bottom: 12px; overflow-x: auto; }
+.workspace-nav button { white-space: nowrap; border-color: transparent; color: var(--secondary); background: transparent; }
+.workspace-nav button[aria-selected="true"] { color: var(--link); background: var(--selected); }
+.two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; align-items: start; }
+.padded { padding: 24px; }
+.section-copy { max-width: 780px; color: var(--secondary); line-height: 1.7; font-size: 14px; margin: -8px 0 24px; }
+.body-copy { color: var(--secondary); font-size: 13px; line-height: 1.75; margin: 0; }
+.stack { display: grid; gap: 24px; }
+.stack h3 { font-size: 18px; margin: 0 0 8px; }
+.architecture { display: grid; gap: 0; margin-top: 20px; }
+.architecture div { padding: 16px 0; border-top: 1px solid var(--border); display: grid; grid-template-columns: 32px 1fr; gap: 16px; }
+.architecture b { font: 12px 'JetBrains Mono', monospace; color: var(--secondary); padding-top: 4px; }
+.architecture h3 { font-size: 16px; margin: 0 0 4px; }
+.architecture p { margin: 0; font-size: 12px; color: var(--secondary); line-height: 1.6; }
+.research { margin-top: 24px; }
+.evidence-controls { display: grid; grid-template-columns: minmax(240px,1fr) 1.4fr; gap: 24px; align-items: center; padding: 24px; }
+.evidence-controls p { margin: 0; }
+.evidence-table { min-width: 640px; }
+.barcell { min-width: 180px; }
+.metric-bar { height: 4px; border-radius: 4px; background: var(--border); margin-top: 8px; max-width: 180px; }
+.metric-bar span { display: block; height: 4px; background: var(--secondary); border-radius: 4px; }
+.emphasis { font-weight: 700; }
+.findings { margin: 0; padding: 20px 24px; font-size: 14px; line-height: 1.7; border-top: 1px solid var(--border); }
+.metric-strip { display: grid; grid-template-columns: repeat(3,1fr); gap: 16px; margin: 24px 0; }
+.metric-strip > div { border: 1px solid var(--border); border-radius: 12px; padding: 20px; background: var(--surface); }
+.metric-strip small { display: block; font-size: 12px; color: var(--secondary); line-height: 1.5; }
+.metric-strip strong { display: block; font: 24px 'JetBrains Mono', monospace; letter-spacing: -.04em; margin: 12px 0 8px; }
+.chart-wrap { padding: 16px; }
+#diagram { width: 100%; display: block; }
+.chart-key { display: flex; flex-wrap: wrap; gap: 8px 16px; padding: 0 24px 20px; }
+.chart-key button { font-size: 11px; padding: 0; min-height: 24px; border: 0; font-weight: 400; }
+.actions { display: flex; flex-wrap: wrap; gap: 8px; }
+.actions button, .actions a { font-size: 12px; }
+.inline-link { display: inline-flex; align-items: center; min-height: 38px; padding: 8px 12px; }
+.section-block { margin-top: 32px; }
+.detector-strip { display: flex; justify-content: space-between; color: var(--secondary); font-size: 11px; }
+.track-section { position: relative; height: 104px; border-left: 4px solid var(--node); border-right: 4px solid var(--node); display: grid; place-items: center; margin: 16px 12px; }
+.track-section::before { content: ''; position: absolute; width: 100%; height: 12px; border-top: 2px solid var(--track); border-bottom: 2px solid var(--track); }
+.occupancy-token { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 12px 20px; z-index: 1; font: 14px 'JetBrains Mono', monospace; }
+.signal-status { font-size: 28px; margin: 12px 0 8px; font-family: 'General Sans', sans-serif; font-weight: 700; letter-spacing: -.03em; }
+.detector-actions { padding: 20px 24px; border-top: 1px solid var(--border); display: flex; gap: 8px; flex-wrap: wrap; }
+.detector-actions button { font-size: 12px; }
+.event-list { list-style: none; margin: 0; padding: 0; max-height: 280px; overflow: auto; }
+.event-list li { border-top: 1px solid var(--border); padding: 12px 24px; display: flex; gap: 16px; font-size: 12px; line-height: 1.6; }
+.event-list .num { padding-top: 2px; color: var(--secondary); }
+.cost-form { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; padding: 24px; }
+.cost-form label { text-transform: none; letter-spacing: 0; line-height: 1.5; }
+.cost-form input { width: 100%; min-width: 0; padding: 10px 12px; background: var(--surface); border: 1px solid var(--border); color: var(--text); border-radius: 6px; }
+.cost-result { padding: 24px; }
+.cost-result dl { margin: 24px 0 0; }
+.cost-result dl div { display: flex; justify-content: space-between; gap: 16px; padding: 16px 0; border-top: 1px solid var(--border); font-size: 13px; }
+.cost-result dd { margin: 0; font: 13px 'JetBrains Mono', monospace; text-align: right; }
+#netCost { font: 32px 'JetBrains Mono', monospace; letter-spacing: -.05em; margin: 16px 0; display: block; }
+.roadmap { display: grid; grid-template-columns: repeat(4,1fr); gap: 24px; }
+.roadmap > div { border-top: 1px solid var(--border); padding-top: 20px; }
+.roadmap h3 { font-size: 16px; margin: 12px 0; }
+button:disabled { opacity: .5; cursor: not-allowed; transform: none; }
+@media (max-width: 860px) {
+  .two-col { grid-template-columns: 1fr; } .hero-stats { display: none; }
+  .hero { gap: 0; } .evidence-controls { grid-template-columns: 1fr; gap: 16px; }
+  .roadmap { grid-template-columns: 1fr 1fr; }
+}
+@media (max-width: 540px) {
+  .hero { padding-top: 32px; } h1 { font-size: 38px; }
+  .workspace-nav { margin-bottom: 24px; gap: 4px; }
+  .workspace-nav button { padding: 8px 12px; font-size: 12px; }
+  .metric-strip { grid-template-columns: 1fr; gap: 8px; }
+  .metric-strip > div { padding: 16px; } .metric-strip strong { font-size: 22px; }
+  .padded, .evidence-controls, .cost-form, .cost-result { padding: 20px; }
+  .cost-form { grid-template-columns: 1fr; } .roadmap { grid-template-columns: 1fr; }
+  .chart-wrap { overflow-x: auto; } #diagram { width: 680px; min-width: 680px; }
+  .section-title { flex-wrap: wrap; } .section-title .chip { white-space: normal; }
+}
+</style>
 </head>
 <body>
-<a class="skip" href="#simulation">Ir al simulador</a>
+<a class="skip" href="#workspace">Ir al laboratorio</a>
 <nav class="topbar" aria-label="Navegación principal">
   <div class="wrap nav">
     <a class="brand" href="#top" aria-label="Rail Lab, inicio">
@@ -178,7 +260,7 @@ footer p { margin: 0; }
       RAIL / LAB
     </a>
     <div class="navlinks">
-      <a href="#simulation">Simulador</a><a href="#sources">Modelo y fuentes</a>
+      <a href="#workspace">Laboratorio</a><a href="#sources">Modelo y fuentes</a>
       <a href="https://github.com/alejandropedersen123-collab/rail-localization-matlab" target="_blank" rel="noopener">GitHub ↗</a>
       <button id="theme" aria-label="Activar tema oscuro" title="Cambiar tema" aria-pressed="false"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 14.5A8.5 8.5 0 0 1 9.5 4a8.5 8.5 0 1 0 10.5 10.5Z"/></svg></button>
     </div>
@@ -187,14 +269,48 @@ footer p { margin: 0; }
 <main class="wrap" id="top">
   <header class="hero">
     <div>
-      <div class="overline">Laboratorio ferroviario · Madrid — Andalucía</div>
-      <h1>Ocho trenes.<br>Una red compartida.</h1>
-      <p class="intro">Explora cómo confluyen los servicios de Málaga, Sevilla y Granada. Sigue cada tren, sus paradas y la separación que deja al siguiente.</p>
+      <div class="overline">Rail Lab · Investigación en operación automática</div>
+      <h1>Hacia un ferrocarril<br>más autónomo.</h1>
+      <p class="intro">Una arquitectura para explorar conducción automática, detección local y fusión de sensores. El objetivo: reducir el coste de operación y mejorar la fiabilidad. Aquí puedes examinar las pruebas y poner a prueba las hipótesis.</p>
     </div>
-    <div class="hero-stats" aria-label="Alcance del modelo"><div><strong>08</strong><span>trenes</span></div><div><strong>03</strong><span>ramales</span></div><div><strong>03</strong><span>escenarios</span></div></div>
+    <aside class="hero-stats"><div class="overline">Estado del proyecto</div><p><strong>Prototipo de simulación</strong></p><p>8 trenes · 3 ramales<br>17 escenarios de sensores<br>Código y resultados revisables</p></aside>
   </header>
-  <section id="simulation" aria-labelledby="simulation-title">
-    <div class="section-title"><h2 id="simulation-title">Explorar la circulación</h2><span class="chip">Simulación educativa</span></div>
+  <div class="workspace-nav" role="tablist" aria-label="Áreas del laboratorio" id="workspace">
+    <button id="tab-proposal" role="tab" aria-selected="true" aria-controls="proposal" data-panel="proposal">01 · Visión y evidencias</button>
+    <button id="tab-simulation" role="tab" aria-selected="false" aria-controls="simulation" tabindex="-1" data-panel="simulation">02 · Red automática</button>
+    <button id="tab-detection" role="tab" aria-selected="false" aria-controls="detection" tabindex="-1" data-panel="detection">03 · Detección local</button>
+    <button id="tab-economics" role="tab" aria-selected="false" aria-controls="economics" tabindex="-1" data-panel="economics">04 · Coste y despliegue</button>
+  </div>
+  <section id="proposal" role="tabpanel" aria-labelledby="tab-proposal">
+    <div class="two-col">
+      <article class="card padded">
+        <span class="overline">La arquitectura que se quiere investigar</span>
+        <h2>Automatizar con información contrastada.</h2>
+        <p class="body-copy">La visión es una operación sin conductor a bordo, con supervisión central y respuesta local ante degradaciones. El proyecto permite estudiar sus piezas; todavía no las integra en un sistema operativo ferroviario.</p>
+        <div class="architecture">
+          <div><b>01</b><section><h3>Localizar y detectar</h3><p>Combinar GNSS, odometría y otras observaciones; confirmar ocupación de secciones con detección local.</p></section></div>
+          <div><b>02</b><section><h3>Supervisar límites</h3><p>Conservar la exclusión de recursos y anticipar el frenado antes del fin de autorización.</p></section></div>
+          <div><b>03</b><section><h3>Conducir y coordinar</h3><p>Regular velocidad, paradas e itinerarios automáticamente. Medir el efecto de las incidencias sobre otros trenes.</p></section></div>
+        </div>
+      </article>
+      <div class="stack">
+        <article class="card padded"><span class="overline">Referencia operativa · Copenhague</span><h2>Sin conductor. Con supervisión.</h2><p class="body-copy">El metro de Copenhague utiliza control automático y mantiene un centro de control con personal. Esa autonomía es la referencia de la propuesta. Llevarla a una red interurbana exige estudiar su material, accesos a vía, evacuación, comunicaciones y operación degradada.</p><p class="body-copy" style="margin-top:16px"><a href="https://metroselskabet.dk/en/about-us/about-the-metro/rolling-stock-train-systems-and-signalling/" target="_blank" rel="noopener">Sistema automático de Metroselskabet ↗</a><br><a href="https://www.metroservice.dk/en/careers/positions/control-room/" target="_blank" rel="noopener">Supervisión desde el centro de control ↗</a></p></article>
+        <article class="card padded"><span class="overline">Hipótesis de valor</span><h3 style="margin-top:12px">Menor coste total. Mayor robustez ante fallos.</h3><p class="body-copy">Se busca reducir duplicidades, detectar incoherencias y conservar información útil al perder sensores o cobertura. El ahorro y la fiabilidad operativa se deberán medir frente a una alternativa concreta, con el mismo alcance de servicio.</p></article>
+      </div>
+    </div>
+    <article class="card research">
+      <div class="cardhead"><h2>Qué dicen los experimentos</h2><span class="chip" id="evidenceSize"></span></div>
+      <div class="evidence-controls"><div class="field"><label for="sensorScenario">Fallo o condición de ensayo</label><select id="sensorScenario"></select></div><p class="body-copy">Cuatro configuraciones sobre las mismas observaciones sintéticas. El error se mide en <em>replay</em>; las órdenes de freno, en lazo cerrado. GNSS básico es una referencia experimental, no el sistema ferroviario actual.</p></div>
+      <div class="table-wrap"><table class="evidence-table"><thead><tr><th>Configuración</th><th>Error RMSE ↓</th><th>Cobertura ±3σ</th><th id="brakeHeading">Cruces del obstáculo</th></tr></thead><tbody id="evidenceRows"></tbody></table></div>
+      <p class="findings" id="finding"></p>
+      <div class="note">RMSE = error cuadrático medio de posición. La cobertura indica la fracción de muestras cuyo error cae dentro de ±3σ del filtro; no es una probabilidad de seguridad. Se muestran todos los casos, incluidos los fallos que siguen sin resolverse.</div>
+      <div class="padded actions"><button id="exportEvidence">Descargar resultados CSV ↓</button><a class="inline-link" href="https://github.com/alejandropedersen123-collab/rail-localization-matlab/blob/main/docs/RESEARCH_CASE.md" target="_blank" rel="noopener">Propuesta, evidencias y plan de validación ↗</a></div>
+    </article>
+    <p class="body-copy section-block">Alcance: el ensayo de sensores, la red de ocho trenes y el demostrador de detección local son experimentos separados. La fusión todavía no alimenta al regulador de la red, que utiliza posición y ocupación ideales. La web reproduce resultados de MATLAB; el ensayo de ocupación y el cálculo de costes sí se ejecutan en el navegador.</p>
+  </section>
+  <section id="simulation" role="tabpanel" aria-labelledby="tab-simulation" hidden>
+    <div class="section-title"><h2 id="simulation-title">Ocho trenes. Regulación automática.</h2><span class="chip">Modelo microscópico · 3 escenarios</span></div>
+    <p class="section-copy">Las reservas, la aceleración, el frenado y las paradas se calculan automáticamente. Explora cómo se propaga una incidencia sobre el tronco Madrid–Andalucía.</p>
     <div class="controls">
       <button id="play" class="primary" aria-label="Reproducir simulación"><span id="playIcon" aria-hidden="true">▶</span><span id="playText">Reproducir</span></button>
       <div class="field scenario-field"><label for="scenario">Escenario</label><select id="scenario"></select></div>
@@ -223,6 +339,38 @@ footer p { margin: 0; }
         </div>
       </section>
     </div>
+    <div class="metric-strip"><div><small>Finalizaciones del caso completo</small><strong id="auditComplete"></strong><small>Resultado del motor; no estado del cursor</small></div><div><small>Conflictos de ocupación auditados</small><strong id="auditConflicts"></strong><small>Comprobados en cada paso de integración</small></div><div><small>Mayor cambio de llegada frente al nominal</small><strong id="arrivalDelta"></strong><small>Comparación de simulaciones, no puntualidad real</small></div></div>
+    <div class="two-col section-block">
+      <article class="card"><div class="cardhead"><h2>Diagrama espacio–tiempo</h2><small>Tronco compartido</small></div><div class="chart-wrap" tabindex="0" role="region" aria-label="Diagrama espacio–tiempo desplazable"><canvas id="diagram" width="1000" height="520" role="img" aria-label="Trayectorias de los ocho trenes entre Madrid y la bifurcación de Málaga; la tabla adjunta ofrece llegadas por tren"></canvas></div><div class="chart-key" id="chartKey"></div><div class="note">Eje vertical: distancia acumulada del modelo desde Madrid hasta Bif. Málaga AV. Solo se dibujan los cinco tramos comunes. Un cruce entre sentidos opuestos es normal en doble vía. Pulsa en el gráfico para mover el tiempo; el deslizador permite hacerlo con teclado.</div></article>
+      <article class="card"><div class="cardhead"><h2>Impacto por tren</h2><small>Caso completo</small></div><div class="table-wrap"><table><thead><tr><th>Tren</th><th>Llegada T+</th><th>Δ vs. nominal</th></tr></thead><tbody id="arrivalRows"></tbody></table></div><div class="padded actions"><button id="exportComparison">Descargar comparación CSV ↓</button><button id="shareView">Copiar enlace a esta vista</button></div><p id="shareStatus" class="note" role="status">Selecciona un tren para destacarlo en el mapa y el diagrama.</p></article>
+    </div>
+  </section>
+  <section id="detection" role="tabpanel" aria-labelledby="tab-detection" hidden>
+    <div class="section-title"><h2>La ocupación se confirma localmente.</h2><span class="chip">Ensayo interactivo · Un tramo</span></div>
+    <p class="section-copy">Un contador mantiene el balance entre ejes que entran y salen. Si el tren se detiene, el tramo sigue ocupado. La falta de cobertura pública no borra el recuento local; el centro remoto pierde la confirmación actual.</p>
+    <div class="two-col">
+      <article class="card"><div class="cardhead"><h2>Sección A → B</h2><button id="newSection">Nuevo ensayo</button></div><div class="padded"><div class="detector-strip"><span>A · Detector de entrada</span><span>B · Detector de salida</span></div><div class="track-section"><span class="occupancy-token" id="axleBalance"></span></div><p class="body-copy">Entradas − salidas = ejes contabilizados dentro. Los paquetes de 4 ejes son una simplificación didáctica; no representan la composición S-102/112.</p></div><div class="detector-actions"><button data-event="entry" data-axles="4">Entrada · +4 ejes</button><button data-event="exit" data-axles="1">Salida parcial · −1 eje</button><button data-event="exit" data-axles="4">Salida · −4 ejes</button><button data-event="hold">Tren detenido</button></div><div class="detector-actions"><button id="toggleLink">Cortar enlace remoto</button><button data-event="detector_fault">Fallar detector / enlace local</button></div><div class="note">Ensayo unidireccional, sin desvíos. «Nuevo ensayo» crea un experimento independiente con tramo vacío verificado; no representa un procedimiento de rearme de una instalación real.</div></article>
+      <div class="stack"><article class="card padded"><div class="two-col"><div><span class="overline">Decisión local</span><div class="signal-status" id="localStatus" role="status"></div><p class="body-copy" id="localDecision"></p></div><div><span class="overline">Vista del centro remoto</span><div class="signal-status" id="remoteStatus" role="status"></div><p class="body-copy" id="remoteDecision"></p></div></div><p class="note" id="detectorFault" style="margin:20px 0 0"></p></article><article class="card"><div class="cardhead"><h2>Registro del ensayo</h2><button id="exportDetection">Exportar JSON ↓</button></div><ol class="event-list" id="detectorEvents"></ol></article></div>
+    </div>
+    <article class="card padded section-block"><h3>El principio ya existe en el ferrocarril.</h3><p class="body-copy">Los circuitos de vía y los contadores de ejes detectan ocupación en instalaciones actuales. La propuesta investiga cómo combinar detección local, estimación embarcada y operación automática con un coste total justificable. Necesita alimentación y enlaces locales supervisados; ausencia de internet no equivale a ausencia de toda comunicación. Un fallo conocido del detector deja el estado indeterminado, aunque el balance vuelva a cero. Un pulso perdido que no se detecte es una limitación de este modelo y exige diagnóstico y validación del sistema real.</p><div class="source-links" style="margin-top:16px"><a href="https://www.frauscher.com/en/products/axle-counters" target="_blank" rel="noopener">Contadores de ejes · Frauscher ↗</a><a href="https://www.adif.es/documents/20124/45207799/02.-%2BTechnical%2BDocumentation%2BITE%2Bcompliant%2Btrain%2Bdetection_ADIF.SPAIN%2Bes.pdf/51e8d77c-da3f-c859-60c6-09c385b3a1b2?t=1756892978735" target="_blank" rel="noopener">Sistemas de detección · Adif ↗</a></div></article>
+  </section>
+  <section id="economics" role="tabpanel" aria-labelledby="tab-economics" hidden>
+    <div class="section-title"><h2>¿Cuándo compensaría desplegarlo?</h2><span class="chip">Hipótesis editables · Sin precios precargados</span></div>
+    <p class="section-copy">Compara el coste añadido del proyecto con los costes que se podrían evitar frente a una alternativa definida. Introduce presupuestos y evidencia operativa: el simulador no aporta precios de mercado ni ahorros medidos.</p>
+    <div class="two-col">
+      <article class="card"><div class="cardhead"><h2>Supuestos del despliegue</h2><button id="resetCost">Vaciar costes</button></div><form id="costForm" class="cost-form" autocomplete="off">
+        <div class="field"><label for="costTrains">Trenes equipados</label><input id="costTrains" name="trains" type="number" min="1" max="10000" step="1" value="8" required></div>
+        <div class="field"><label for="costYears">Horizonte (años completos)</label><input id="costYears" name="years" type="number" min="1" max="50" step="1" value="5" required></div>
+        <div class="field"><label for="costOnboard">Equipamiento e instalación por tren (€)</label><input id="costOnboard" name="onboard" type="number" min="0" step="any" placeholder="Sin presupuesto" required></div>
+        <div class="field"><label for="costTrackside">Equipamiento e instalación en vía (€)</label><input id="costTrackside" name="trackside" type="number" min="0" step="any" placeholder="Sin presupuesto" required></div>
+        <div class="field"><label for="costIntegration">Ingeniería e integración total (€)</label><input id="costIntegration" name="integration" type="number" min="0" step="any" placeholder="Sin presupuesto" required></div>
+        <div class="field"><label for="costValidation">Ensayos, validación y puesta en servicio (€)</label><input id="costValidation" name="validation" type="number" min="0" step="any" placeholder="Sin presupuesto" required></div>
+        <div class="field"><label for="costAnnual">Operación, soporte y mantenimiento (€/año)</label><input id="costAnnual" name="annual" type="number" min="0" step="any" placeholder="Sin estimación" required></div>
+        <div class="field"><label for="costAvoided">Costes evitables frente a alternativa (€/año)</label><input id="costAvoided" name="avoided" type="number" min="0" step="any" placeholder="Necesita evidencia" required></div>
+      </form><div class="note">Incluye sensores, cómputo, comunicaciones, centro de control, energía, ciberseguridad, reposiciones y mantenimiento en las partidas correspondientes. Cero significa que has supuesto coste nulo; dejar vacío significa que falta información.</div></article>
+      <article class="card"><div class="cardhead"><h2>Balance del caso introducido</h2><span class="chip">Sin descuento financiero</span></div><div class="cost-result" aria-live="polite"><span class="overline" id="netLabel">Resultado pendiente</span><strong id="netCost">—</strong><p class="body-copy" id="costConclusion">Completa las hipótesis para calcular el balance. No se presupone que el proyecto ahorre dinero.</p><dl><div><dt>Inversión inicial</dt><dd id="investment">—</dd></div><div><dt>Coste total en el horizonte</dt><dd id="totalCost">—</dd></div><div><dt>Coste anual evitable necesario para equilibrar</dt><dd id="requiredBenefit">—</dd></div><div><dt>Recuperación simple de inversión</dt><dd id="payback">—</dd></div></dl></div><div class="padded actions"><button id="exportCost" disabled>Exportar hipótesis y resultado CSV ↓</button></div><div class="note">Balance = años × coste anual evitable − inversión inicial − años × operación anual. Mismo horizonte y alcance en ambas alternativas. Sin inflación, descuento, valor residual ni monetización de la seguridad; no es una oferta comercial.</div></article>
+    </div>
+    <article class="card padded section-block"><span class="overline">Camino hacia la operación autónoma</span><h2>Qué falta para convertir la idea en un sistema.</h2><div class="roadmap"><div><span class="chip">Actual · Simulación</span><h3>1. Comparar hipótesis</h3><p class="body-copy">Revisar fallos, reservas, costes e indicadores con resultados reproducibles.</p></div><div><span class="chip">Pendiente</span><h3>2. Integrar y ensayar</h3><p class="body-copy">Conectar estimación, detección y regulador; probar retardos, pérdidas, reinicios y fallos comunes con hardware.</p></div><div><span class="chip">Pendiente</span><h3>3. Piloto supervisado</h3><p class="body-copy">Registrar datos reales sin tomar el mando. Medir disponibilidad, falsos avisos, mantenimiento y costes.</p></div><div><span class="chip">Pendiente</span><h3>4. Validar la operación</h3><p class="body-copy">Evaluar protección, explotación degradada, accesos, puertas, evacuación y supervisión antes de plantear servicio sin conductor.</p></div></div></article>
   </section>
   <details class="card sources" id="sources">
     <summary><div><span class="overline">Entender el modelo</span><h2>Datos, fuentes y supuestos</h2></div><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></summary>
@@ -238,140 +386,8 @@ footer p { margin: 0; }
 </main>
 <script id="data" type="application/json">__NETWORK_DATA__</script>
 <script>
-'use strict';
-const data = JSON.parse(document.getElementById('data').textContent);
-const el = id => document.getElementById(id), cv = el('map'), ctx = cv.getContext('2d');
-const palette = {
-  light: ['#14776E','#94620F','#9656A5','#AB4665','#316E9D','#79701D','#B35C36','#526F32'],
-  dark: ['#75CFBE','#E7BE76','#CAA2DC','#E69DB1','#8DC3EA','#D5CC88','#ECA786','#B2CC8E']
-};
-// Presentation coordinates only. Infrastructure lengths stay in the data payload.
-const positions = [[340,68],[340,172],[340,252],[340,332],[340,412],[340,480],
-  [140,756],[510,548],[510,628],[510,792],[674,628],[826,628],[864,712],[936,808]];
-const names = ['Madrid Atocha','Ciudad Real','Puertollano','Villanueva de Córdoba','Córdoba',
-  'Bif. Málaga AV','Sevilla Santa Justa','Puente Genil-Herrera','Antequera Santa Ana',
-  'Málaga María Zambrano','Antequera AV','Bif. Archidona','Loja','Granada'];
-const scenarioNames = {nominal:'Circulación nominal',signal_outage:'Interrupción de autorizaciones',station_delay:'Parada prolongada'};
-const stateNames = ['Pendiente de salida','En circulación','Parada en estación','Finalizado'];
-let sim = data.scenarios[0], frame = 0, selected = 0, playing = false, simTime = 0, last = null;
-let theme = 'light', ink;
-const pad = n => String(n).padStart(2,'0');
-document.querySelector('.hero-stats div:last-child strong').textContent = pad(data.scenarios.length);
-const clock = s => pad(Math.floor(s/3600))+':'+pad(Math.floor(s%3600/60))+':'+pad(Math.floor(s%60));
-const km = x => Number.isFinite(x) ? (x/1000).toFixed(2)+' km' : '—';
-const label = text => text.replaceAll('Malaga','Málaga').replaceAll(' > ',' → ');
-el('scenario').innerHTML = data.scenarios.map(s => '<option value="'+s.id+'">'+scenarioNames[s.id]+'</option>').join('');
-el('rows').innerHTML = sim.trains.map((t,i) => '<tr id="row'+i+'"><td><button data-train="'+i+'" aria-pressed="false" title="Seleccionar '+t.id+'"><span class="dot" id="dot'+i+'"></span>'+t.id+'</button><span class="route">'+label(t.label)+'</span></td><td class="num" id="v'+i+'"></td><td class="num" id="g'+i+'"></td></tr>').join('');
-const trainButtons = [...document.querySelectorAll('[data-train]')];
-trainButtons.forEach(button => button.addEventListener('click', () => { selected = +button.dataset.train; render(); }));
-
-function setPlaying(value) {
-  playing = value;
-  el('playIcon').textContent = playing ? 'Ⅱ' : '▶';
-  el('playText').textContent = playing ? 'Pausar' : 'Reproducir';
-  el('play').setAttribute('aria-label', playing ? 'Pausar simulación' : 'Reproducir simulación');
-}
-function pickScenario() {
-  sim = data.scenarios.find(s => s.id === el('scenario').value);
-  frame = 0; simTime = sim.time[0]; setPlaying(false);
-  el('slider').max = sim.time.length-1;
-  el('duration').textContent = clock(sim.time.at(-1)).slice(0,5);
-  render();
-}
-function setTheme(value) {
-  theme = value; document.documentElement.dataset.theme = theme;
-  const style = getComputedStyle(document.documentElement);
-  ink = Object.fromEntries(['surface','text','secondary','track','single','node','primary'].map(key => [key,style.getPropertyValue('--'+key).trim()]));
-  el('theme').setAttribute('aria-pressed', String(theme === 'dark'));
-  el('theme').setAttribute('aria-label', theme === 'dark' ? 'Activar tema claro' : 'Activar tema oscuro');
-  document.querySelector('meta[name="theme-color"]').content = style.getPropertyValue('--background').trim();
-  render();
-}
-el('theme').addEventListener('click', () => setTheme(theme === 'light' ? 'dark' : 'light'));
-el('scenario').addEventListener('change', pickScenario);
-el('slider').addEventListener('input', () => { frame = +el('slider').value; simTime = sim.time[frame]; render(); });
-el('play').addEventListener('click', () => {
-  if (frame === sim.time.length-1) { frame = 0; simTime = sim.time[0]; }
-  setPlaying(!playing); render();
-});
-function point(row) {
-  const e = data.edges[row[6]-1], a = positions[e.From-1], b = positions[e.To-1];
-  const q = row[7]/(e.Length_km*1000);
-  return {x:a[0]+(b[0]-a[0])*q,y:a[1]+(b[1]-a[1])*q,dx:b[0]-a[0],dy:b[1]-a[1]};
-}
-function renderMap() {
-  ctx.clearRect(0,0,cv.width,cv.height); ctx.lineCap = 'round';
-  data.edges.forEach(e => {
-    const a = positions[e.From-1], b = positions[e.To-1];
-    ctx.strokeStyle = e.Tracks === 1 ? ink.single : ink.track;
-    ctx.lineWidth = e.Tracks === 1 ? 3 : 6;
-    ctx.setLineDash(e.Tracks === 1 ? [8,7] : []);
-    ctx.beginPath(); ctx.moveTo(...a); ctx.lineTo(...b); ctx.stroke();
-    if (e.Tracks === 2) { ctx.lineWidth = 2; ctx.strokeStyle = ink.surface; ctx.stroke(); }
-    ctx.setLineDash([]);
-  });
-  data.nodes.forEach(n => {
-    const [nx,ny] = positions[n.ID-1];
-    ctx.beginPath(); ctx.arc(nx,ny,4,0,Math.PI*2); ctx.fillStyle = ink.node; ctx.fill();
-    ctx.font = '400 17px "DM Sans", sans-serif'; ctx.fillStyle = ink.secondary;
-    let x = nx+14, y = ny+6, align = 'left';
-    if (n.ID <= 6) { x = nx-18; align = 'right'; }
-    if ([7,9,10,11,12,13,14].includes(n.ID)) {
-      x = nx; align = 'center'; y = ny+([9,11,12].includes(n.ID) ? -22 : 32);
-    }
-    ctx.textAlign = align; ctx.fillText(names[n.ID-1],x,y);
-  });
-  sim.trains.forEach((t,i) => {
-    const r = t.samples[frame]; if (r[2] === 0 || r[2] === 3) return;
-    const p = point(r), norm = Math.hypot(p.dx,p.dy);
-    const ox = -p.dy/norm*8*t.direction, oy = p.dx/norm*8*t.direction;
-    ctx.save(); ctx.translate(p.x+ox,p.y+oy);
-    if (i === selected) {
-      ctx.beginPath(); ctx.arc(0,0,17,0,Math.PI*2); ctx.strokeStyle = ink.primary; ctx.lineWidth = 2; ctx.stroke();
-    }
-    ctx.rotate(Math.atan2(p.dy,p.dx)+(t.direction < 0 ? Math.PI : 0));
-    ctx.fillStyle = palette[theme][i]; ctx.strokeStyle = ink.surface; ctx.lineWidth = 2;
-    ctx.beginPath(); ctx.moveTo(12,0); ctx.lineTo(2,-6); ctx.lineTo(-10,-6);
-    ctx.lineTo(-10,6); ctx.lineTo(2,6); ctx.closePath(); ctx.fill(); ctx.stroke(); ctx.restore();
-    ctx.font = '400 14px "JetBrains Mono", monospace'; ctx.textAlign = 'left';
-    ctx.fillStyle = palette[theme][i]; ctx.fillText(t.id,p.x+ox+18,p.y+oy-12);
-  });
-}
-function render() {
-  if (!ink) return;
-  renderMap(); let active = 0;
-  sim.trains.forEach((t,i) => {
-    const r = t.samples[frame]; if (r[2] === 1 || r[2] === 2) active++;
-    el('v'+i).textContent = (r[1]*3.6).toFixed(0); el('g'+i).textContent = km(r[4]);
-    el('row'+i).classList.toggle('selected',i === selected);
-    el('dot'+i).style.background = palette[theme][i];
-    trainButtons[i].setAttribute('aria-pressed',String(i === selected));
-  });
-  const t = sim.trains[selected], r = t.samples[frame], edge = data.edges[r[6]-1];
-  el('active').textContent = active+' activos / 8'; el('time').textContent = clock(sim.time[frame]);
-  el('slider').value = frame; el('slider').setAttribute('aria-valuetext',clock(sim.time[frame]));
-  el('fault').textContent = r[8] ? 'Autorizaciones sin ampliación' : '';
-  el('detailTitle').textContent = t.id;
-  el('selectedRoute').textContent = label(t.label)+' · 200 m · Ruta ≈ '+Math.round(t.length/1000)+' km';
-  el('state').textContent = r[2] === 1 && r[1] < .05 ? 'Detenido en vía' : stateNames[r[2]];
-  el('distance').textContent = km(r[0]);
-  el('authority').textContent = r[2] === 1 || r[2] === 2 ? km(Math.max(0,r[3]-r[0])) : '—';
-  el('detail').textContent = (r[5] > 0 ? 'Líder sobre la ruta: SIM'+pad(r[5])+'. ' : 'Sin líder aplicable en la ruta y sentido actuales. ')
-    +(r[2] === 0 ? 'Salida prevista: T+'+clock(t.departure)+'. ' : '')
-    +'Tramo: '+names[edge.From-1]+' – '+names[edge.To-1]+' (≈ '+edge.Length_km.toFixed(1)+' km). Límite asumido: '+edge.ModelCap_kmh+' km/h.';
-}
-function tick(now) {
-  if (last !== null && playing) {
-    simTime += Math.min((now-last)/1000,.1)*+el('rate').value;
-    while (frame < sim.time.length-1 && sim.time[frame+1] <= simTime) frame++;
-    if (frame === sim.time.length-1) setPlaying(false);
-    render();
-  }
-  last = now; requestAnimationFrame(tick);
-}
-setTheme('light'); pickScenario();
-document.fonts.ready.then(render);
-requestAnimationFrame(tick);
+__ANALYTICS_JS__
+__APP_JS__
 </script>
 </body>
 </html>
