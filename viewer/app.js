@@ -184,7 +184,7 @@ el('chartKey').innerHTML = sim.trains.map((t,i) => '<button data-chart-train="'+
 document.querySelectorAll('[data-chart-train]').forEach(b => b.addEventListener('click', () => {selected = +b.dataset.chartTrain; render();}));
 function renderDiagram() {
   const canvas = el('diagram'), dc = canvas.getContext('2d');
-  const left = 126, right = 964, top = 28, bottom = 456;
+  const left = 196, right = 964, top = 28, bottom = 456;
   const distance = data.edges.filter(e => e.ID <= 5).reduce((sum,e) => sum+e.Length_km,0);
   const x = time => left + time / sim.time.at(-1) * (right-left);
   const y = km => top + km / distance * (bottom-top);
@@ -224,7 +224,7 @@ function seek(seconds) {
 }
 el('diagram').addEventListener('click', event => {
   const box = el('diagram').getBoundingClientRect();
-  seek(Math.max(0,Math.min(1,((event.clientX-box.left)/box.width*1000-126)/(964-126)))*sim.time.at(-1));
+  seek(Math.max(0,Math.min(1,((event.clientX-box.left)/box.width*1000-196)/(964-196)))*sim.time.at(-1));
 });
 el('shareView').addEventListener('click', async () => {
   const url = new URL(location.href); url.hash = '';
