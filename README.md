@@ -1,4 +1,46 @@
-# Localización ferroviaria modular en MATLAB
+# Simulación ferroviaria en MATLAB: ocho trenes entre Madrid y Andalucía
+
+**Ocho trenes independientes, ramales de Málaga, Sevilla y Granada, convergencias, vía única y separación calculada.** Incluye un visor interactivo que funciona sin MATLAB y conserva el laboratorio original de localización y fallos de sensores.
+
+La topología y las distancias de referencia se apoyan en documentación de Adif. **Las circulaciones, salidas, límites locales y separaciones son del modelo**: no son posiciones reales de los ocho trenes mencionados en las noticias ni un horario oficial. Cada distancia tiene su procedencia y grado de aproximación en [Datos contrastados](docs/REAL_DATA.md).
+
+![Visor de los ocho trenes y sus separaciones calculadas](results_network/preview.png)
+
+## Abrir el visor
+
+Descarga el repositorio y abre **[`results_network/visor.html`](results_network/visor.html)** en tu navegador. Es un archivo independiente, con los resultados incorporados; no necesita servidor ni conexión. En GitHub, descarga el archivo para ejecutarlo: la vista de código no reproduce HTML.
+
+Puedes reproducir o desplazar el tiempo, seleccionar cualquiera de los ocho trenes y ver su velocidad, recorrido, autorización y hueco al tren precedente. Los escenarios son circulación nominal, interrupción de nuevas autorizaciones durante 10 minutos y una parada prolongada de 20 minutos.
+
+## Ejecutar la red en MATLAB
+
+MATLAB R2026a, sin Simulink ni toolboxes adicionales:
+
+```matlab
+results = rail_network_demo;  % Tres escenarios, tablas, figuras y visor
+report = validate_network;   % Pruebas de física, recursos y escenarios completos
+```
+
+| Elemento | Implementación |
+|---|---|
+| Red | Tronco Madrid–Córdoba; bifurcación a Sevilla/Málaga; ramal a Granada en Antequera |
+| Tráfico | Cuatro servicios ficticios Málaga–Madrid, dos Sevilla–Madrid y dos Granada–Madrid; mitad en cada sentido |
+| Distancia de ruta | Aproximadamente 512 km a Málaga, 471 km a Sevilla y 569 km a Granada; referencias mixtas declaradas |
+| Vehículos | 200 m, tomando como referencia la ficha S-102/112; dinámica simplificada |
+| Regulación | Reservas exclusivas, liberación por la cola, anticipación de frenado y paradas |
+| Exportación | CSV por tren e instante, auditoría, figuras y visor HTML independiente |
+
+No se asigna una separación universal: se calcula entre la cabeza del seguidor y la cola del líder sobre la ruta compartida. Los cantones de 2 km y los apartaderos son sintéticos. No se dispone del CVM completo vigente ni de registros sincronizados de los trenes de la noticia. Los tiempos de viaje resultantes no deben usarse como predicción comercial.
+
+- [Fuentes, fechas y valores contrastados](docs/REAL_DATA.md)
+- [Funcionamiento, hipótesis y formato de resultados](docs/NETWORK_MODEL.md)
+- [Comprobaciones ejecutadas](results_network/checks.csv) y [convergencia del paso temporal](results_network/convergence.csv)
+- [Entorno, resultados de validación y límites observados](docs/NETWORK_VALIDATION.md)
+- [Resultados nominales por tren](results_network/nominal/trains.csv), [interrupción](results_network/signal_outage/trains.csv) y [parada prolongada](results_network/station_delay/trains.csv)
+
+## Laboratorio original: localización y fallos de sensores
+
+Esta segunda parte es un experimento separado, conservado en `+rail`. Sus resultados y limitaciones se refieren a **un tren y un obstáculo fijo**, no a la red de ocho trenes anterior.
 
 **¿Qué ocurre cuando los sensores, el mapa o los mensajes dejan de ser fiables?**
 

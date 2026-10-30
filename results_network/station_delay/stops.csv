@@ -1,0 +1,31 @@
+Scenario,Train,Station,Arrival_s,Dwell_s
+station_delay,SIM03,Loja,869,120
+station_delay,SIM01,Antequera Santa Ana,926,1320
+station_delay,SIM03,Antequera Santa Ana,2344,120
+station_delay,SIM02,Cordoba,2415,120
+station_delay,SIM04,Antequera Santa Ana,2562,120
+station_delay,SIM04,Puente Genil-Herrera,3271,120
+station_delay,SIM01,Cordoba,3798,120
+station_delay,SIM03,Cordoba,4020,120
+station_delay,SIM08,Ciudad Real,4094,120
+station_delay,SIM05,Cordoba,4368,120
+station_delay,SIM04,Cordoba,4515,120
+station_delay,SIM08,Puertollano,4841,120
+station_delay,SIM06,Cordoba,4968,120
+station_delay,SIM07,Cordoba,5568,120
+station_delay,SIM05,Antequera Santa Ana,6035,120
+station_delay,SIM04,Puertollano,6408,120
+station_delay,SIM08,Cordoba,6734,120
+station_delay,SIM06,Sevilla Santa Justa,6905,60
+station_delay,SIM02,Madrid Atocha,6910,60
+station_delay,SIM05,Malaga Maria Zambrano,7088,60
+station_delay,SIM04,Ciudad Real,7155,120
+station_delay,SIM07,Antequera Santa Ana,7235,120
+station_delay,SIM08,Puente Genil-Herrera,7973,120
+station_delay,SIM01,Madrid Atocha,8293,60
+station_delay,SIM03,Madrid Atocha,8515,60
+station_delay,SIM07,Loja,8640,120
+station_delay,SIM08,Antequera Santa Ana,8682,120
+station_delay,SIM04,Madrid Atocha,9576,60
+station_delay,SIM07,Granada,9636,60
+station_delay,SIM08,Malaga Maria Zambrano,9735,60

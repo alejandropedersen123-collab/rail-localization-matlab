@@ -1,0 +1,31 @@
+Scenario,Train,Station,Arrival_s,Dwell_s
+nominal,SIM03,Loja,869,120
+nominal,SIM01,Antequera Santa Ana,926,120
+nominal,SIM03,Antequera Santa Ana,2274,120
+nominal,SIM02,Cordoba,2415,120
+nominal,SIM04,Antequera Santa Ana,2492,120
+nominal,SIM01,Cordoba,2615,120
+nominal,SIM04,Puente Genil-Herrera,3201,120
+nominal,SIM03,Cordoba,3946,120
+nominal,SIM08,Ciudad Real,4094,120
+nominal,SIM05,Cordoba,4368,120
+nominal,SIM04,Cordoba,4445,120
+nominal,SIM08,Puertollano,4841,120
+nominal,SIM06,Cordoba,4968,120
+nominal,SIM07,Cordoba,5568,120
+nominal,SIM05,Antequera Santa Ana,6035,120
+nominal,SIM04,Puertollano,6338,120
+nominal,SIM08,Cordoba,6734,120
+nominal,SIM06,Sevilla Santa Justa,6905,60
+nominal,SIM02,Madrid Atocha,6910,60
+nominal,SIM04,Ciudad Real,7085,120
+nominal,SIM05,Malaga Maria Zambrano,7088,60
+nominal,SIM01,Madrid Atocha,7110,60
+nominal,SIM07,Antequera Santa Ana,7235,120
+nominal,SIM08,Puente Genil-Herrera,7973,120
+nominal,SIM03,Madrid Atocha,8441,60
+nominal,SIM07,Loja,8640,120
+nominal,SIM08,Antequera Santa Ana,8682,120
+nominal,SIM04,Madrid Atocha,9506,60
+nominal,SIM07,Granada,9636,60
+nominal,SIM08,Malaga Maria Zambrano,9735,60

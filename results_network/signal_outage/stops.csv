@@ -1,0 +1,31 @@
+Scenario,Train,Station,Arrival_s,Dwell_s
+signal_outage,SIM03,Loja,869,120
+signal_outage,SIM01,Antequera Santa Ana,926,120
+signal_outage,SIM03,Antequera Santa Ana,2274,120
+signal_outage,SIM02,Cordoba,2415,120
+signal_outage,SIM04,Antequera Santa Ana,2492,120
+signal_outage,SIM01,Cordoba,2615,120
+signal_outage,SIM04,Puente Genil-Herrera,3201,120
+signal_outage,SIM03,Cordoba,4418,120
+signal_outage,SIM08,Ciudad Real,4638,120
+signal_outage,SIM05,Cordoba,4915,120
+signal_outage,SIM04,Cordoba,4993,120
+signal_outage,SIM08,Puertollano,5385,120
+signal_outage,SIM06,Cordoba,5520,120
+signal_outage,SIM07,Cordoba,6103,120
+signal_outage,SIM05,Antequera Santa Ana,6582,120
+signal_outage,SIM04,Puertollano,6886,120
+signal_outage,SIM08,Cordoba,7278,120
+signal_outage,SIM02,Madrid Atocha,7447,60
+signal_outage,SIM06,Sevilla Santa Justa,7457,60
+signal_outage,SIM04,Ciudad Real,7633,120
+signal_outage,SIM05,Malaga Maria Zambrano,7635,60
+signal_outage,SIM01,Madrid Atocha,7639,60
+signal_outage,SIM07,Antequera Santa Ana,7770,120
+signal_outage,SIM08,Puente Genil-Herrera,8517,120
+signal_outage,SIM03,Madrid Atocha,8913,60
+signal_outage,SIM07,Loja,9175,120
+signal_outage,SIM08,Antequera Santa Ana,9226,120
+signal_outage,SIM04,Madrid Atocha,10054,60
+signal_outage,SIM07,Granada,10171,60
+signal_outage,SIM08,Malaga Maria Zambrano,10279,60
